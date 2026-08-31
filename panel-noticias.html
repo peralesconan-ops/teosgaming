@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>TEOS AI | Centro de Inteligencia</title>
+
+    <link
+        rel="stylesheet"
+        href="estilo.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="encabezado">
+
+        <div class="logo">
+
+            🤖 TEOS <span>AI</span>
+
+        </div>
+
+
+        <nav class="menu">
+
+            <a href="index.html">
+                Inicio
+            </a>
+
+
+            <a href="noticias.html">
+                Noticias
+            </a>
+
+
+            <a href="rankings.html">
+                Rankings
+            </a>
+
+
+            <a href="pc.html">
+                PC
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+
+    <main>
+
+        <section class="panel-teos-ai">
+
+
+            <!-- =================================================
+                 TÍTULO
+            ================================================== -->
+
+            <div class="titulo-pagina">
+
+                <span class="etiqueta">
+
+                    🤖 TEOS AI
+
+                </span>
+
+
+                <h1>
+
+                    Centro de Inteligencia
+
+                </h1>
+
+
+                <p>
+
+                    Gestiona las noticias, rankings y contenido
+                    de PC de TEOS Gaming utilizando inteligencia artificial.
+
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 NAVEGACIÓN DEL PANEL
+            ================================================== -->
+
+            <div class="teos-ai-menu">
+
+
+                <button
+                    id="botonSeccionNoticias"
+                    class="teos-ai-menu-boton activo"
+                >
+
+                    📰 Noticias
+
+                </button>
+
+
+                <button
+                    id="botonSeccionRankings"
+                    class="teos-ai-menu-boton"
+                >
+
+                    🏆 Rankings
+
+                </button>
+
+
+                <button
+                    id="botonSeccionPC"
+                    class="teos-ai-menu-boton"
+                >
+
+                    💻 PC
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SECCIÓN NOTICIAS
+            ================================================== -->
+
+            <div
+                id="seccionNoticias"
+                class="teos-ai-seccion"
+            >
+
+
+                <div class="ai-chat">
+
+
+                    <div class="ai-mensaje">
+
+                        <strong>
+
+                            🤖 TEOS AI
+
+                        </strong>
+
+
+                        <p>
+
+                            ¿Qué noticias gaming quieres buscar?
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="ai-entrada">
+
+
+                        <input
+                            type="text"
+                            id="consultaNoticias"
+                            placeholder="Ejemplo: Busca las noticias gaming de hoy..."
+                        >
+
+
+                        <button
+                            id="buscarNoticias"
+                        >
+
+                            🔎 Buscar noticias
+
+                        </button>
+
+
+                    </div>
+
+
+
+                    <div
+                        id="resultadoNoticias"
+                        class="resultado-ai"
+                    >
+
+                        <p>
+
+                            Escribe una búsqueda para comenzar.
+
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SECCIÓN RANKINGS
+            ================================================== -->
+
+            <div
+                id="seccionRankings"
+                class="teos-ai-seccion"
+                style="display:none;"
+            >
+
+
+                <div class="ai-chat">
+
+
+                    <div class="ai-mensaje">
+
+                        <strong>
+
+                            🏆 TEOS AI
+
+                        </strong>
+
+
+                        <p>
+
+                            Actualiza automáticamente los
+                            10 rankings principales de TEOS Gaming.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="ai-entrada">
+
+
+                        <button
+                            id="prepararRankings"
+                            class="boton-preparar"
+                        >
+
+                            🤖 Preparar los 10 rankings
+
+                        </button>
+
+
+                    </div>
+
+
+
+                    <div
+                        id="resultadoRankings"
+                        class="resultado-ai"
+                    >
+
+                        <p>
+
+                            Pulsa el botón para que TEOS AI
+                            prepare los 10 rankings.
+
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SECCIÓN PC
+            ================================================== -->
+
+            <div
+                id="seccionPC"
+                class="teos-ai-seccion"
+                style="display:none;"
+            >
+
+
+                <div class="ai-chat">
+
+
+                    <div class="ai-mensaje">
+
+                        <strong>
+
+                            💻 TEOS AI — PC
+
+                        </strong>
+
+
+                        <p>
+
+                            Gestiona y prepara automáticamente
+                            el contenido de PC de TEOS Gaming.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         OPCIONES DE PC
+                    ================================================== -->
+
+                    <div class="ai-entrada">
+
+
+                        <button
+                            id="prepararPC"
+                            class="boton-preparar"
+                        >
+
+                            🤖 Preparar contenido de PC
+
+                        </button>
+
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         INFORMACIÓN
+                    ================================================== -->
+
+                    <div class="resultado-ai">
+
+
+                        <h2>
+
+                            💻 Contenido de PC
+
+                        </h2>
+
+
+                        <p>
+
+                            TEOS AI podrá preparar contenido
+                            especializado para jugadores de PC.
+
+                        </p>
+
+
+                        <div class="lista-pc-ai">
+
+
+                            <div class="pc-ai-opcion">
+
+                                📰
+
+                                <strong>
+                                    Noticias de PC
+                                </strong>
+
+                                <p>
+                                    Noticias y novedades
+                                    relacionadas con PC Gaming.
+                                </p>
+
+                            </div>
+
+
+                            <div class="pc-ai-opcion">
+
+                                🎮
+
+                                <strong>
+                                    Juegos recomendados
+                                </strong>
+
+                                <p>
+                                    Selecciones de juegos
+                                    recomendados para PC.
+                                </p>
+
+                            </div>
+
+
+                            <div class="pc-ai-opcion">
+
+                                ⚙️
+
+                                <strong>
+                                    Optimización y FPS
+                                </strong>
+
+                                <p>
+                                    Consejos para mejorar
+                                    el rendimiento de los juegos.
+                                </p>
+
+                            </div>
+
+
+                            <div class="pc-ai-opcion">
+
+                                🖥️
+
+                                <strong>
+                                    Hardware y componentes
+                                </strong>
+
+                                <p>
+                                    Información sobre componentes,
+                                    actualizaciones y equipos.
+                                </p>
+
+                            </div>
+
+
+                            <div class="pc-ai-opcion">
+
+                                🔧
+
+                                <strong>
+                                    Guías para PC
+                                </strong>
+
+                                <p>
+                                    Tutoriales y consejos para
+                                    configurar y mejorar un PC Gaming.
+                                </p>
+
+                            </div>
+
+
+                            <div class="pc-ai-opcion">
+
+                                🏆
+
+                                <strong>
+                                    Rankings de PC
+                                </strong>
+
+                                <p>
+                                    Rankings y selecciones
+                                    de videojuegos para PC.
+                                </p>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         RESULTADO PC
+                    ================================================== -->
+
+                    <div
+                        id="resultadoPC"
+                        class="resultado-ai"
+                    >
+
+                        <p>
+
+                            Pulsa el botón para que TEOS AI
+                            prepare el contenido de PC.
+
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+
+        <div class="footer-contenido">
+
+
+            <div class="footer-marca">
+
+
+                <div class="logo">
+
+                    🎮 TEOS <span>GAMING</span>
+
+                </div>
+
+
+                <p>
+
+                    Noticias, videojuegos, guías y novedades
+                    del mundo gaming.
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="footer-bottom">
+
+
+            <p>
+
+                © 2026 TEOS Gaming.
+                Todos los derechos reservados.
+
+            </p>
+
+
+        </div>
+
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        src="panel-noticias.js"
+    ></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TEOS Gaming | Noticias, juegos, lanzamientos y guías</title>
+
+    <meta
+        name="description"
+        content="TEOS Gaming: noticias de videojuegos, lanzamientos, guías, rankings y novedades de PC, consolas y Android."
+    >
+
+    <meta
+        name="keywords"
+        content="videojuegos, noticias gaming, juegos, PC, consolas, Android, lanzamientos, guías"
+    >
+
+    <link rel="stylesheet" href="estilo.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         CABECERA
+    ========================== -->
+
+    <header class="encabezado">
+
+        <div class="logo">
+            🎮 TEOS <span>GAMING</span>
+        </div>
+
+
+        <button
+            class="boton-menu"
+            id="botonMenu">
+            ☰
+        </button>
+
+
+        <nav class="menu">
+
+            <a href="index.html">
+                Inicio
+            </a>
+
+            <a href="noticias.html">
+                Noticias
+            </a>
+
+            <a href="lanzamientos.html">
+                Lanzamientos
+            </a>
+
+            <a href="guias.html">
+                Guías
+            </a>
+
+            <a href="rankings.html">
+                Rankings
+            </a>
+
+            <a href="pc.html">
+                PC
+            </a>
+
+            <a href="android.html">
+                Android
+            </a>
+
+        </nav>
+
+
+        <!-- BUSCADOR -->
+
+        <div class="buscador">
+
+            <input
+                type="text"
+                id="campoBusqueda"
+                placeholder="Buscar videojuegos..."
+            >
+
+            <button
+                class="boton-buscar"
+                id="botonBuscar">
+                🔎
+            </button>
+
+        </div>
+
+
+        <div
+            id="resultadosBusqueda"
+            class="resultados-busqueda">
+        </div>
+
+    </header>
+
+
+
+    <main>
+
+
+        <!-- =========================
+             NOTICIA DESTACADA
+        ========================== -->
+
+        <section class="noticia-principal">
+
+            <div class="contenido-noticia">
+
+                <span class="etiqueta">
+                    🔥 NOTICIA DESTACADA
+                </span>
+
+
+                <h1>
+                    Los videojuegos que están revolucionando
+                    el mundo gaming
+                </h1>
+
+
+                <p>
+                    Descubre las novedades, lanzamientos y noticias
+                    que están dando de qué hablar entre los jugadores.
+                </p>
+
+
+                <a
+                    href="noticias/noticia1.html"
+                    class="boton-leer">
+                    Leer noticia
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             ÚLTIMAS NOTICIAS
+        ========================== -->
+
+        <section class="ultimas-noticias">
+
+            <div class="titulo-seccion">
+
+                <h2>
+                    📰 Últimas noticias
+                </h2>
+
+
+                <a href="noticias.html">
+                    Ver todas →
+                </a>
+
+            </div>
+
+
+            <!--
+                JavaScript colocará aquí
+                las noticias automáticamente.
+            -->
+
+            <div
+                class="contenedor-noticias"
+                id="contenedorNoticias">
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             JUEGOS POPULARES
+        ========================== -->
+
+        <section class="juegos-populares">
+
+            <div class="titulo-seccion">
+
+                <h2>
+                    🏆 Juegos populares
+                </h2>
+
+
+                <a href="pc.html">
+                    Ver todos →
+                </a>
+
+            </div>
+
+
+            <div class="grid-juegos">
+
+
+                <!-- COUNTER-STRIKE 2 -->
+
+                <article class="juego">
+
+                    <a href="counter-strike-2.html">
+
+                        <div class="portada-juego juego-1"></div>
+
+                        <div class="info-juego">
+
+                            <h3>
+                                Counter-Strike 2
+                            </h3>
+
+                            <p>
+                                🎯 Shooter · 🖥️ PC
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </article>
+
+
+
+                <!-- FORTNITE -->
+
+                <article class="juego">
+
+                    <a href="fortnite.html">
+
+                        <div class="portada-juego juego-2"></div>
+
+                        <div class="info-juego">
+
+                            <h3>
+                                Fortnite
+                            </h3>
+
+                            <p>
+                                🔥 Acción · 🖥️ PC
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </article>
+
+
+
+                <!-- VALORANT -->
+
+                <article class="juego">
+
+                    <a href="valorant.html">
+
+                        <div class="portada-juego juego-3"></div>
+
+                        <div class="info-juego">
+
+                            <h3>
+                                Valorant
+                            </h3>
+
+                            <p>
+                                🎯 Shooter · 🖥️ PC
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </article>
+
+
+
+                <!-- FREE FIRE -->
+
+                <article class="juego">
+
+                    <a href="free-fire.html">
+
+                        <div class="portada-juego juego-4"></div>
+
+                        <div class="info-juego">
+
+                            <h3>
+                                Free Fire
+                            </h3>
+
+                            <p>
+                                🔥 Battle Royale · 📱 Android
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             GUÍAS
+        ========================== -->
+
+        <section class="guias">
+
+            <div class="titulo-seccion">
+
+                <h2>
+                    🎯 Guías para gamers
+                </h2>
+
+
+                <a href="guias.html">
+                    Ver todas →
+                </a>
+
+            </div>
+
+
+            <div class="lista-guias">
+
+
+                <!-- GUÍA REAL -->
+
+                <article class="guia">
+
+                    <div>
+
+                        <span>
+                            🎮 GUÍA
+                        </span>
+
+
+                        <h3>
+                            Cómo mejorar el rendimiento
+                            de tu PC para conseguir más FPS
+                        </h3>
+
+
+                        <p>
+                            Consejos prácticos para mejorar
+                            el rendimiento de tu PC y conseguir
+                            una experiencia de juego más fluida.
+                        </p>
+
+                    </div>
+
+
+                    <a href="noticias/guia1.html">
+                        Leer guía →
+                    </a>
+
+                </article>
+
+
+
+                <!-- SEGUNDA GUÍA -->
+
+                <article class="guia">
+
+                    <div>
+
+                        <span>
+                            💻 GUÍA
+                        </span>
+
+
+                        <h3>
+                            Guías y consejos para videojuegos
+                        </h3>
+
+
+                        <p>
+                            Descubre consejos, trucos y contenido
+                            útil para mejorar tu experiencia
+                            jugando videojuegos.
+                        </p>
+
+                    </div>
+
+
+                    <a href="guias.html">
+                        Ver guías →
+                    </a>
+
+                </article>
+
+
+
+                <!-- TERCERA GUÍA -->
+
+                <article class="guia">
+
+                    <div>
+
+                        <span>
+                            🎮 GUÍA
+                        </span>
+
+
+                        <h3>
+                            Guías de juegos para PC y Android
+                        </h3>
+
+
+                        <p>
+                            Explora el contenido de TEOS Gaming
+                            para descubrir nuevas formas de
+                            disfrutar tus videojuegos.
+                        </p>
+
+                    </div>
+
+
+                    <a href="guias.html">
+                        Ver guías →
+                    </a>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         FOOTER TEOS GAMING
+    ========================== -->
+
+    <footer class="footer">
+
+
+        <div class="footer-contenido">
+
+
+            <div class="footer-marca">
+
+                <div class="logo">
+                    🎮 TEOS <span>GAMING</span>
+                </div>
+
+                <p>
+                    Noticias, videojuegos, guías y novedades
+                    del mundo gaming.
+                </p>
+
+            </div>
+
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    Navegación
+                </h3>
+
+
+                <a href="index.html">
+                    Inicio
+                </a>
+
+
+                <a href="noticias.html">
+                    Noticias
+                </a>
+
+
+                <a href="lanzamientos.html">
+                    Lanzamientos
+                </a>
+
+
+                <a href="guias.html">
+                    Guías
+                </a>
+
+            </div>
+
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    Gaming
+                </h3>
+
+
+                <a href="rankings.html">
+                    Rankings
+                </a>
+
+
+                <a href="pc.html">
+                    PC
+                </a>
+
+
+                <a href="android.html">
+                    Android
+                </a>
+
+            </div>
+
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    Información
+                </h3>
+
+
+                <a href="privacidad.html">
+                    Política de Privacidad
+                </a>
+
+
+                <a href="terminos.html">
+                    Términos y Condiciones
+                </a>
+
+
+                <a href="contacto.html">
+                    Contacto
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 TEOS Gaming. Todos los derechos reservados.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script src="noticias.js"></script>
+
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>

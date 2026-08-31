@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Noticias de videojuegos | TEOS Gaming
+    </title>
+
+    <meta
+        name="description"
+        content="Las últimas noticias de videojuegos, lanzamientos, novedades y actualidad gaming en TEOS Gaming."
+    >
+
+    <link
+        rel="stylesheet"
+        href="estilo.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         ENCABEZADO
+    ========================== -->
+
+    <header class="encabezado">
+
+
+        <div class="logo">
+            🎮 TEOS <span>GAMING</span>
+        </div>
+
+
+        <button
+            class="boton-menu"
+            id="botonMenu"
+            aria-label="Abrir menú"
+        >
+            ☰
+        </button>
+
+
+        <nav class="menu">
+
+            <a href="index.html">
+                Inicio
+            </a>
+
+            <a href="noticias.html">
+                Noticias
+            </a>
+
+            <a href="lanzamientos.html">
+                Lanzamientos
+            </a>
+
+            <a href="guias.html">
+                Guías
+            </a>
+
+            <a href="rankings.html">
+                Rankings
+            </a>
+
+            <a href="pc.html">
+                PC
+            </a>
+
+            <a href="android.html">
+                Android
+            </a>
+
+        </nav>
+
+
+        <!-- BUSCADOR -->
+
+        <div class="buscador">
+
+            <input
+                type="text"
+                id="campoBusqueda"
+                placeholder="Buscar videojuegos..."
+                aria-label="Buscar videojuegos"
+            >
+
+            <button
+                class="boton-buscar"
+                id="botonBuscar"
+                aria-label="Buscar"
+            >
+                🔎
+            </button>
+
+        </div>
+
+
+        <div
+            id="resultadosBusqueda"
+            class="resultados-busqueda">
+        </div>
+
+
+    </header>
+
+
+
+    <!-- =========================
+         CONTENIDO PRINCIPAL
+    ========================== -->
+
+    <main>
+
+
+        <section class="pagina-noticias">
+
+
+            <!-- TÍTULO -->
+
+            <div class="titulo-pagina">
+
+
+                <span class="etiqueta">
+                    🎮 TEOS GAMING
+                </span>
+
+
+                <h1>
+                    Últimas noticias
+                </h1>
+
+
+                <p>
+                    Todas las novedades del mundo de los
+                    videojuegos en un solo lugar.
+                </p>
+
+
+            </div>
+
+
+
+            <!-- =========================
+                 FILTROS
+            ========================== -->
+
+            <div class="filtros-noticias">
+
+
+                <button
+                    class="filtro activo"
+                    data-categoria="Todas"
+                >
+                    Todas
+                </button>
+
+
+                <button
+                    class="filtro"
+                    data-categoria="Videojuegos"
+                >
+                    🎮 Videojuegos
+                </button>
+
+
+                <button
+                    class="filtro"
+                    data-categoria="Noticias"
+                >
+                    🔥 Noticias
+                </button>
+
+
+                <button
+                    class="filtro"
+                    data-categoria="Lanzamientos"
+                >
+                    🚀 Lanzamientos
+                </button>
+
+
+                <button
+                    class="filtro"
+                    data-categoria="Guías"
+                >
+                    🎯 Guías
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =========================
+                 NOTICIAS
+            ========================== -->
+
+            <div
+                class="contenedor-noticias pagina-grid"
+                id="contenedorNoticias"
+            >
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+    <footer class="footer">
+
+    <div class="footer-contenido">
+
+        <div class="footer-marca">
+
+            <div class="logo">
+                🎮 TEOS <span>GAMING</span>
+            </div>
+
+            <p>
+                Noticias, videojuegos, guías y novedades
+                del mundo gaming.
+            </p>
+
+        </div>
+
+
+        <div class="footer-columna">
+
+            <h3>
+                Navegación
+            </h3>
+
+            <a href="index.html">
+                Inicio
+            </a>
+
+            <a href="noticias.html">
+                Noticias
+            </a>
+
+            <a href="lanzamientos.html">
+                Lanzamientos
+            </a>
+
+            <a href="guias.html">
+                Guías
+            </a>
+
+        </div>
+
+
+        <div class="footer-columna">
+
+            <h3>
+                Gaming
+            </h3>
+
+            <a href="rankings.html">
+                Rankings
+            </a>
+
+            <a href="pc.html">
+                PC
+            </a>
+
+            <a href="android.html">
+                Android
+            </a>
+
+        </div>
+
+
+        <div class="footer-columna">
+
+            <h3>
+                Información
+            </h3>
+
+            <a href="privacidad.html">
+                Política de Privacidad
+            </a>
+
+            <a href="terminos.html">
+                Términos y Condiciones
+            </a>
+
+            <a href="contacto.html">
+                Contacto
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 TEOS Gaming. Todos los derechos reservados.
+        </p>
+
+    </div>
+
+</footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script src="noticias.js"></script>
+
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>

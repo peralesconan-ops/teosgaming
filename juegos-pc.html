@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Juegos de PC | TEOS Gaming
+    </title>
+
+    <meta
+        name="description"
+        content="Descubre juegos populares, gratuitos, de acción, RPG, shooters y terror para PC."
+    >
+
+    <link
+        rel="stylesheet"
+        href="estilo.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="encabezado">
+
+        <div class="logo">
+
+            🎮 TEOS <span>GAMING</span>
+
+        </div>
+
+
+        <button
+            class="boton-menu"
+            id="botonMenu"
+        >
+
+            ☰
+
+        </button>
+
+
+        <nav class="menu">
+
+            <a href="index.html">
+                Inicio
+            </a>
+
+            <a href="noticias.html">
+                Noticias
+            </a>
+
+            <a href="lanzamientos.html">
+                Lanzamientos
+            </a>
+
+            <a href="guias.html">
+                Guías
+            </a>
+
+            <a href="rankings.html">
+                Rankings
+            </a>
+
+            <a href="pc.html">
+                PC
+            </a>
+
+            <a href="android.html">
+                Android
+            </a>
+
+        </nav>
+
+
+        <div class="buscador">
+
+            <input
+                type="text"
+                id="campoBusqueda"
+                placeholder="Buscar videojuegos..."
+            >
+
+            <button
+                class="boton-buscar"
+                id="botonBuscar"
+            >
+
+                🔎
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="resultadosBusqueda"
+            class="resultados-busqueda"
+        ></div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main>
+
+        <section class="pagina">
+
+
+            <!-- =================================================
+                 TÍTULO
+            ================================================== -->
+
+            <div class="titulo-pagina">
+
+                <span class="etiqueta">
+
+                    🎮 JUEGOS DE PC
+
+                </span>
+
+
+                <h1>
+
+                    Juegos de PC
+
+                </h1>
+
+
+                <p>
+
+                    Descubre juegos populares, gratuitos,
+                    recomendados y experiencias que vale la pena
+                    conocer.
+
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FILTROS
+            ================================================== -->
+
+            <div class="filtros-juegos">
+
+                <button
+                    class="filtro-juego activo"
+                    data-filtro="todos"
+                >
+
+                    🎮 Todos
+
+                </button>
+
+
+                <button
+                    class="filtro-juego"
+                    data-filtro="gratis"
+                >
+
+                    🆓 Gratis
+
+                </button>
+
+
+                <button
+                    class="filtro-juego"
+                    data-filtro="accion"
+                >
+
+                    🔥 Acción
+
+                </button>
+
+
+                <button
+                    class="filtro-juego"
+                    data-filtro="rpg"
+                >
+
+                    ⚔️ RPG
+
+                </button>
+
+
+                <button
+                    class="filtro-juego"
+                    data-filtro="shooter"
+                >
+
+                    🎯 Shooter
+
+                </button>
+
+
+                <button
+                    class="filtro-juego"
+                    data-filtro="terror"
+                >
+
+                    👻 Terror
+
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 JUEGOS
+            ================================================== -->
+
+            <div
+                class="grid-juegos"
+                id="listaJuegos"
+            >
+
+
+
+                <!-- =============================================
+                     GRATIS
+                ============================================== -->
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis shooter"
+                >
+
+                    <div class="juego-icono">
+                        🎯
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Counter-Strike 2
+                    </h2>
+
+                    <p>
+                        Shooter competitivo gratuito centrado
+                        en estrategia, precisión y trabajo en equipo.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="counter-strike-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis accion shooter"
+                >
+
+                    <div class="juego-icono">
+                        🔫
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Fortnite
+                    </h2>
+
+                    <p>
+                        Battle Royale gratuito con diferentes
+                        modos de juego y actualizaciones constantes.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="fortnite.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis accion"
+                >
+
+                    <div class="juego-icono">
+                        🚀
+                    </div>
+
+                    <span class="juego-categoria">
+                        🚀 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Warframe
+                    </h2>
+
+                    <p>
+                        Acción cooperativa gratuita con combates
+                        rápidos y gran personalización.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="warframe.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis shooter"
+                >
+
+                    <div class="juego-icono">
+                        🎯
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Valorant
+                    </h2>
+
+                    <p>
+                        Shooter táctico competitivo basado en
+                        precisión, estrategia y habilidades.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="valorant.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis shooter"
+                >
+
+                    <div class="juego-icono">
+                        🔥
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Apex Legends
+                    </h2>
+
+                    <p>
+                        Battle Royale gratuito con personajes,
+                        habilidades y combates rápidos.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="apex-legends.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis accion"
+                >
+
+                    <div class="juego-icono">
+                        ⚔️
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ ACCIÓN
+                    </span>
+
+                    <h2>
+                        Dota 2
+                    </h2>
+
+                    <p>
+                        MOBA competitivo gratuito con numerosos
+                        héroes y estrategias.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="dota-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis rpg"
+                >
+
+                    <div class="juego-icono">
+                        ⚔️
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Path of Exile 2
+                    </h2>
+
+                    <p>
+                        RPG de acción con exploración, habilidades,
+                        objetos y combates intensos.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="path-of-exile-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis accion shooter"
+                >
+
+                    <div class="juego-icono">
+                        🦸
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Overwatch 2
+                    </h2>
+
+                    <p>
+                        Shooter por equipos con héroes,
+                        habilidades y diferentes modos.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="overwatch-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis shooter"
+                >
+
+                    <div class="juego-icono">
+                        🪖
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        PUBG: Battlegrounds
+                    </h2>
+
+                    <p>
+                        Battle Royale centrado en supervivencia,
+                        estrategia y combate.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="pubg.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="gratis accion shooter"
+                >
+
+                    <div class="juego-icono">
+                        💥
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        The Finals
+                    </h2>
+
+                    <p>
+                        Shooter competitivo gratuito con escenarios
+                        destructibles y combates dinámicos.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="the-finals.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <!-- =============================================
+                     ACCIÓN
+                ============================================== -->
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion"
+                >
+
+                    <div class="juego-icono">
+                        🚗
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Grand Theft Auto V
+                    </h2>
+
+                    <p>
+                        Acción y mundo abierto con una enorme
+                        ciudad para explorar.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="gta-5.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion"
+                >
+
+                    <div class="juego-icono">
+                        🤠
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Red Dead Redemption 2
+                    </h2>
+
+                    <p>
+                        Aventura de mundo abierto ambientada
+                        en el Viejo Oeste.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="red-dead-redemption-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion"
+                >
+
+                    <div class="juego-icono">
+                        ⚔️
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Devil May Cry 5
+                    </h2>
+
+                    <p>
+                        Acción rápida con combates espectaculares
+                        y diferentes personajes.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="devil-may-cry-5.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion shooter"
+                >
+
+                    <div class="juego-icono">
+                        🔥
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        DOOM Eternal
+                    </h2>
+
+                    <p>
+                        Shooter de acción rápida con combates
+                        intensos contra hordas de enemigos.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="doom-eternal.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion"
+                >
+
+                    <div class="juego-icono">
+                        ⚔️
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        God of War
+                    </h2>
+
+                    <p>
+                        Aventura de acción con combates,
+                        exploración y una historia épica.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="god-of-war.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion"
+                >
+
+                    <div class="juego-icono">
+                        🕷️
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Marvel's Spider-Man Remastered
+                    </h2>
+
+                    <p>
+                        Explora Nueva York y combate contra
+                        diferentes enemigos como Spider-Man.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="spider-man-remastered.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion rpg"
+                >
+
+                    <div class="juego-icono">
+                        🥷
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ ACCIÓN / RPG
+                    </span>
+
+                    <h2>
+                        Sekiro
+                    </h2>
+
+                    <p>
+                        Combate exigente basado en precisión,
+                        reflejos y estrategia.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="sekiro.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion"
+                >
+
+                    <div class="juego-icono">
+                        🦇
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Batman: Arkham Knight
+                    </h2>
+
+                    <p>
+                        Acción y aventura con combate,
+                        exploración y el Batimóvil.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="batman-arkham-knight.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion"
+                >
+
+                    <div class="juego-icono">
+                        🔫
+                    </div>
+
+                    <span class="juego-categoria">
+                        🔥 ACCIÓN
+                    </span>
+
+                    <h2>
+                        Metal Gear Solid V
+                    </h2>
+
+                    <p>
+                        Acción, sigilo y estrategia en grandes
+                        escenarios abiertos.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="metal-gear-solid-v.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="accion rpg"
+                >
+
+                    <div class="juego-icono">
+                        🗡️
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ ACCIÓN / RPG
+                    </span>
+
+                    <h2>
+                        Assassin's Creed Odyssey
+                    </h2>
+
+                    <p>
+                        Aventura de acción y RPG en un enorme
+                        mundo abierto inspirado en la antigua Grecia.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="assassins-creed-odyssey.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <!-- =============================================
+                     RPG
+                ============================================== -->
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg accion"
+                >
+
+                    <div class="juego-icono">
+                        ⚔️
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Elden Ring
+                    </h2>
+
+                    <p>
+                        RPG de acción con un enorme mundo abierto,
+                        enemigos y grandes desafíos.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="elden-ring.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg"
+                >
+
+                    <div class="juego-icono">
+                        🧙
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Baldur's Gate 3
+                    </h2>
+
+                    <p>
+                        RPG con historia, decisiones, exploración
+                        y combates estratégicos.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="baldurs-gate-3.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg"
+                >
+
+                    <div class="juego-icono">
+                        🐺
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        The Witcher 3
+                    </h2>
+
+                    <p>
+                        RPG de mundo abierto con exploración,
+                        misiones y una gran historia.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="the-witcher-3.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg accion"
+                >
+
+                    <div class="juego-icono">
+                        🌃
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Cyberpunk 2077
+                    </h2>
+
+                    <p>
+                        RPG de mundo abierto ambientado en una
+                        ciudad futurista.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="cyberpunk-2077.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg"
+                >
+
+                    <div class="juego-icono">
+                        🐉
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Skyrim
+                    </h2>
+
+                    <p>
+                        RPG de mundo abierto lleno de aventuras,
+                        criaturas y exploración.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="skyrim.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg accion"
+                >
+
+                    <div class="juego-icono">
+                        🔥
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Diablo IV
+                    </h2>
+
+                    <p>
+                        RPG de acción con clases, habilidades,
+                        enemigos y equipamiento.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="diablo-4.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg accion"
+                >
+
+                    <div class="juego-icono">
+                        🐲
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Dragon's Dogma 2
+                    </h2>
+
+                    <p>
+                        RPG de acción con exploración, combates
+                        y criaturas gigantes.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="dragons-dogma-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg accion"
+                >
+
+                    <div class="juego-icono">
+                        🐲
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Monster Hunter: World
+                    </h2>
+
+                    <p>
+                        Caza enormes criaturas y mejora tu equipo
+                        en un mundo lleno de desafíos.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="monster-hunter-world.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg"
+                >
+
+                    <div class="juego-icono">
+                        🎭
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Persona 5 Royal
+                    </h2>
+
+                    <p>
+                        RPG con historia, personajes, exploración
+                        y combates por turnos.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="persona-5-royal.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="rpg accion"
+                >
+
+                    <div class="juego-icono">
+                        🗡️
+                    </div>
+
+                    <span class="juego-categoria">
+                        ⚔️ RPG
+                    </span>
+
+                    <h2>
+                        Final Fantasy VII Rebirth
+                    </h2>
+
+                    <p>
+                        RPG de acción con exploración, personajes
+                        y una historia épica.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="final-fantasy-vii-rebirth.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <!-- =============================================
+                     SHOOTER
+                ============================================== -->
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter gratis"
+                >
+
+                    <div class="juego-icono">
+                        🎯
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Counter-Strike 2
+                    </h2>
+
+                    <p>
+                        Shooter competitivo gratuito basado en
+                        precisión y estrategia.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="counter-strike-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter gratis"
+                >
+
+                    <div class="juego-icono">
+                        🎯
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Valorant
+                    </h2>
+
+                    <p>
+                        Shooter táctico competitivo con agentes
+                        y habilidades especiales.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="valorant.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter gratis"
+                >
+
+                    <div class="juego-icono">
+                        🔫
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Call of Duty: Warzone
+                    </h2>
+
+                    <p>
+                        Shooter gratuito con combates de gran
+                        escala y diferentes modos.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="call-of-duty-warzone.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter"
+                >
+
+                    <div class="juego-icono">
+                        💥
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Battlefield 2042
+                    </h2>
+
+                    <p>
+                        Shooter militar con grandes mapas y
+                        combates multijugador.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="battlefield-2042.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter accion"
+                >
+
+                    <div class="juego-icono">
+                        🔥
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        DOOM Eternal
+                    </h2>
+
+                    <p>
+                        Shooter de acción rápida con combates
+                        intensos.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="doom-eternal.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter gratis"
+                >
+
+                    <div class="juego-icono">
+                        👽
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Halo Infinite
+                    </h2>
+
+                    <p>
+                        Shooter de ciencia ficción con campaña
+                        y modos multijugador.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="halo-infinite.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter gratis"
+                >
+
+                    <div class="juego-icono">
+                        🔥
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Apex Legends
+                    </h2>
+
+                    <p>
+                        Shooter Battle Royale gratuito con
+                        diferentes personajes.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="apex-legends.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter"
+                >
+
+                    <div class="juego-icono">
+                        🛡️
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Rainbow Six Siege
+                    </h2>
+
+                    <p>
+                        Shooter táctico basado en estrategia,
+                        operadores y destrucción.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="rainbow-six-siege.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter gratis"
+                >
+
+                    <div class="juego-icono">
+                        💥
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        The Finals
+                    </h2>
+
+                    <p>
+                        Shooter competitivo con escenarios
+                        altamente destructibles.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="the-finals.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="shooter gratis"
+                >
+
+                    <div class="juego-icono">
+                        🌌
+                    </div>
+
+                    <span class="juego-categoria">
+                        🎯 SHOOTER
+                    </span>
+
+                    <h2>
+                        Destiny 2
+                    </h2>
+
+                    <p>
+                        Shooter de ciencia ficción con elementos
+                        de acción y RPG.
+                    </p>
+
+                    <span class="juego-info">
+                        🆓 Gratis · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="destiny-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <!-- =============================================
+                     TERROR
+                ============================================== -->
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror"
+                >
+
+                    <div class="juego-icono">
+                        👻
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Resident Evil 4
+                    </h2>
+
+                    <p>
+                        Terror y supervivencia combinados con
+                        acción y exploración.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="resident-evil-4.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror accion"
+                >
+
+                    <div class="juego-icono">
+                        🧟
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Resident Evil Village
+                    </h2>
+
+                    <p>
+                        Terror, supervivencia y acción en una
+                        misteriosa aldea.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="resident-evil-village.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror"
+                >
+
+                    <div class="juego-icono">
+                        😱
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Silent Hill 2
+                    </h2>
+
+                    <p>
+                        Terror psicológico, misterio y exploración
+                        en una ciudad inquietante.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="silent-hill-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror accion"
+                >
+
+                    <div class="juego-icono">
+                        🧟
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Dead Space
+                    </h2>
+
+                    <p>
+                        Terror de supervivencia ambientado
+                        en una estación espacial.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="dead-space.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror"
+                >
+
+                    <div class="juego-icono">
+                        👽
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Alien: Isolation
+                    </h2>
+
+                    <p>
+                        Terror y supervivencia frente a una
+                        criatura extremadamente peligrosa.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="alien-isolation.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror"
+                >
+
+                    <div class="juego-icono">
+                        😈
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Outlast 2
+                    </h2>
+
+                    <p>
+                        Terror psicológico y supervivencia
+                        en un entorno perturbador.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="outlast-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror"
+                >
+
+                    <div class="juego-icono">
+                        🔦
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Amnesia: The Bunker
+                    </h2>
+
+                    <p>
+                        Terror de supervivencia en un oscuro
+                        búnker lleno de peligros.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="amnesia-the-bunker.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror"
+                >
+
+                    <div class="juego-icono">
+                        👻
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Phasmophobia
+                    </h2>
+
+                    <p>
+                        Terror cooperativo donde debes investigar
+                        fenómenos paranormales.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="phasmophobia.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror"
+                >
+
+                    <div class="juego-icono">
+                        😈
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        The Outlast Trials
+                    </h2>
+
+                    <p>
+                        Terror cooperativo y supervivencia
+                        en un entorno experimental.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="the-outlast-trials.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+                <article
+                    class="juego-card"
+                    data-categorias="terror accion"
+                >
+
+                    <div class="juego-icono">
+                        🌑
+                    </div>
+
+                    <span class="juego-categoria">
+                        👻 TERROR
+                    </span>
+
+                    <h2>
+                        Alan Wake 2
+                    </h2>
+
+                    <p>
+                        Terror psicológico, misterio y supervivencia
+                        con una narrativa cinematográfica.
+                    </p>
+
+                    <span class="juego-info">
+                        💰 Pago · 🖥️ PC
+                    </span>
+
+                    <a
+                        href="alan-wake-2.html"
+                        class="boton-pc"
+                    >
+                        Ver juego →
+                    </a>
+
+                </article>
+
+
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <div class="footer-contenido">
+
+
+            <div class="footer-marca">
+
+                <div class="logo">
+
+                    🎮 TEOS <span>GAMING</span>
+
+                </div>
+
+                <p>
+
+                    Noticias, videojuegos, guías y novedades
+                    del mundo gaming.
+
+                </p>
+
+            </div>
+
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    Navegación
+                </h3>
+
+                <a href="index.html">
+                    Inicio
+                </a>
+
+                <a href="noticias.html">
+                    Noticias
+                </a>
+
+                <a href="lanzamientos.html">
+                    Lanzamientos
+                </a>
+
+                <a href="guias.html">
+                    Guías
+                </a>
+
+            </div>
+
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    Gaming
+                </h3>
+
+                <a href="rankings.html">
+                    Rankings
+                </a>
+
+                <a href="pc.html">
+                    PC
+                </a>
+
+                <a href="android.html">
+                    Android
+                </a>
+
+            </div>
+
+
+
+            <div class="footer-columna">
+
+                <h3>
+                    Información
+                </h3>
+
+                <a href="privacidad.html">
+                    Política de Privacidad
+                </a>
+
+                <a href="terminos.html">
+                    Términos y Condiciones
+                </a>
+
+                <a href="contacto.html">
+                    Contacto
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+
+                © 2026 TEOS Gaming.
+                Todos los derechos reservados.
+
+            </p>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         FILTROS
+    ====================================================== -->
+
+    <script>
+
+        const botonesFiltro =
+            document.querySelectorAll(
+                ".filtro-juego"
+            );
+
+
+        const juegos =
+            document.querySelectorAll(
+                ".juego-card"
+            );
+
+
+        botonesFiltro.forEach(
+            function (boton) {
+
+                boton.addEventListener(
+                    "click",
+                    function () {
+
+                        const filtro =
+                            boton.dataset.filtro;
+
+
+                        botonesFiltro.forEach(
+                            function (b) {
+
+                                b.classList.remove(
+                                    "activo"
+                                );
+
+                            }
+                        );
+
+
+                        boton.classList.add(
+                            "activo"
+                        );
+
+
+                        juegos.forEach(
+                            function (juego) {
+
+                                const categorias =
+                                    juego.dataset.categorias
+                                        .split(" ");
+
+
+                                if (
+                                    filtro === "todos" ||
+                                    categorias.includes(
+                                        filtro
+                                    )
+                                ) {
+
+                                    juego.style.display =
+                                        "";
+
+                                }
+                                else {
+
+                                    juego.style.display =
+                                        "none";
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
