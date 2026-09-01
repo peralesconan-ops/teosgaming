@@ -14,11 +14,17 @@ const botonSeccionNoticias =
 const botonSeccionRankings =
     document.getElementById("botonSeccionRankings");
 
+const botonSeccionPC =
+    document.getElementById("botonSeccionPC");
+
 const seccionNoticias =
     document.getElementById("seccionNoticias");
 
 const seccionRankings =
     document.getElementById("seccionRankings");
+
+const seccionPC =
+    document.getElementById("seccionPC");
 
 
 // =====================================================
@@ -32,17 +38,34 @@ if (botonSeccionNoticias) {
         function () {
 
             if (seccionNoticias) {
-                seccionNoticias.style.display = "block";
+                seccionNoticias.style.display =
+                    "block";
             }
 
             if (seccionRankings) {
-                seccionRankings.style.display = "none";
+                seccionRankings.style.display =
+                    "none";
             }
 
-            botonSeccionNoticias.classList.add("activo");
+            if (seccionPC) {
+                seccionPC.style.display =
+                    "none";
+            }
+
+            botonSeccionNoticias.classList.add(
+                "activo"
+            );
 
             if (botonSeccionRankings) {
-                botonSeccionRankings.classList.remove("activo");
+                botonSeccionRankings.classList.remove(
+                    "activo"
+                );
+            }
+
+            if (botonSeccionPC) {
+                botonSeccionPC.classList.remove(
+                    "activo"
+                );
             }
 
         }
@@ -62,17 +85,81 @@ if (botonSeccionRankings) {
         function () {
 
             if (seccionNoticias) {
-                seccionNoticias.style.display = "none";
+                seccionNoticias.style.display =
+                    "none";
             }
 
             if (seccionRankings) {
-                seccionRankings.style.display = "block";
+                seccionRankings.style.display =
+                    "block";
             }
 
-            botonSeccionRankings.classList.add("activo");
+            if (seccionPC) {
+                seccionPC.style.display =
+                    "none";
+            }
+
+            botonSeccionRankings.classList.add(
+                "activo"
+            );
 
             if (botonSeccionNoticias) {
-                botonSeccionNoticias.classList.remove("activo");
+                botonSeccionNoticias.classList.remove(
+                    "activo"
+                );
+            }
+
+            if (botonSeccionPC) {
+                botonSeccionPC.classList.remove(
+                    "activo"
+                );
+            }
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// CAMBIAR A PC
+// =====================================================
+
+if (botonSeccionPC) {
+
+    botonSeccionPC.addEventListener(
+        "click",
+        function () {
+
+            if (seccionNoticias) {
+                seccionNoticias.style.display =
+                    "none";
+            }
+
+            if (seccionRankings) {
+                seccionRankings.style.display =
+                    "none";
+            }
+
+            if (seccionPC) {
+                seccionPC.style.display =
+                    "block";
+            }
+
+            botonSeccionPC.classList.add(
+                "activo"
+            );
+
+            if (botonSeccionNoticias) {
+                botonSeccionNoticias.classList.remove(
+                    "activo"
+                );
+            }
+
+            if (botonSeccionRankings) {
+                botonSeccionRankings.classList.remove(
+                    "activo"
+                );
             }
 
         }
@@ -86,13 +173,20 @@ if (botonSeccionRankings) {
 // =====================================================
 
 const campoConsulta =
-    document.getElementById("consultaNoticias");
+    document.getElementById(
+        "consultaNoticias"
+    );
 
 const botonBuscar =
-    document.getElementById("buscarNoticias");
+    document.getElementById(
+        "buscarNoticias"
+    );
 
 const resultado =
-    document.getElementById("resultadoNoticias");
+    document.getElementById(
+        "resultadoNoticias"
+    );
+
 
 let noticiasEncontradas = [];
 
@@ -111,6 +205,7 @@ if (botonBuscar) {
     );
 
 }
+
 
 if (campoConsulta) {
 
@@ -139,70 +234,77 @@ async function buscarNoticias() {
             ? campoConsulta.value.trim()
             : "";
 
+
     if (consulta === "") {
 
-        if (resultado) {
-
-            resultado.innerHTML =
-                "<div class='ai-error'>" +
-                "⚠️ Escribe qué noticias quieres buscar." +
-                "</div>";
-
-        }
+        mostrarErrorNoticias(
+            "⚠️ Escribe qué noticias quieres buscar."
+        );
 
         return;
 
     }
 
+
     if (resultado) {
 
         resultado.innerHTML =
-            "<div class='ai-cargando'>" +
-            "<strong>🤖 TEOS AI</strong>" +
-            "<p>🔎 Buscando noticias de hoy...</p>" +
-            "</div>";
+            `
+            <div class="ai-cargando">
+
+                <strong>
+                    🤖 TEOS AI
+                </strong>
+
+                <p>
+                    🔎 Buscando noticias recientes...
+                </p>
+
+            </div>
+            `;
 
     }
 
+
     try {
+
+        // =================================================
+        // IMPORTANTE:
+        // SE USA EL MISMO DOMINIO.
+        // NO SE USA localhost.
+        // =================================================
 
         const respuesta =
             await fetch(
-                "/api/noticias"
+                "/api/noticias",
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
             );
+
+
+        const datos =
+            await leerRespuestaJSON(
+                respuesta
+            );
+
 
         if (!respuesta.ok) {
 
-            let mensaje =
-                "Error del servidor.";
-
-            try {
-
-                const errorData =
-                    await respuesta.json();
-
-                if (errorData.error) {
-                    mensaje =
-                        errorData.error;
-                }
-
-            } catch (error) {
-                console.error(
-                    "No se pudo leer el error del servidor:",
-                    error
-                );
-            }
-
             throw new Error(
-                mensaje
+                obtenerMensajeError(
+                    datos,
+                    "No se pudieron obtener las noticias."
+                )
             );
 
         }
 
-        const noticias =
-            await respuesta.json();
 
-        if (!Array.isArray(noticias)) {
+        if (
+            !Array.isArray(datos)
+        ) {
 
             throw new Error(
                 "El servidor no devolvió una lista válida de noticias."
@@ -210,27 +312,28 @@ async function buscarNoticias() {
 
         }
 
+
         noticiasEncontradas =
-            noticias;
+            datos;
 
-        if (noticias.length === 0) {
 
-            if (resultado) {
+        if (
+            noticiasEncontradas.length === 0
+        ) {
 
-                resultado.innerHTML =
-                    "<div class='ai-error'>" +
-                    "⚠️ No encontramos noticias de hoy." +
-                    "</div>";
-
-            }
+            mostrarErrorNoticias(
+                "⚠️ No encontramos noticias recientes en las fuentes disponibles."
+            );
 
             return;
 
         }
 
+
         mostrarNoticias(
-            noticias
+            noticiasEncontradas
         );
+
 
     } catch (error) {
 
@@ -239,24 +342,118 @@ async function buscarNoticias() {
             error
         );
 
-        if (resultado) {
 
-            resultado.innerHTML =
-                "<div class='ai-error'>" +
-                "<strong>" +
-                "❌ No se pudo conectar con TEOS AI." +
-                "</strong>" +
-                "<p>" +
-                escaparHTML(
-                    error.message ||
-                    "Error de conexión."
-                ) +
-                "</p>" +
-                "</div>";
-
-        }
+        mostrarErrorNoticias(
+            error.message ||
+            "No se pudo conectar con TEOS AI."
+        );
 
     }
+
+}
+
+
+// =====================================================
+// MOSTRAR ERROR DE NOTICIAS
+// =====================================================
+
+function mostrarErrorNoticias(
+    mensaje
+) {
+
+    if (!resultado) {
+        return;
+    }
+
+
+    resultado.innerHTML =
+        `
+        <div class="ai-error">
+
+            <strong>
+                ❌ No se pudo completar la búsqueda.
+            </strong>
+
+            <p>
+                ${escaparHTML(
+                    mensaje
+                )}
+            </p>
+
+        </div>
+        `;
+
+}
+
+
+// =====================================================
+// LEER RESPUESTA JSON
+// =====================================================
+
+async function leerRespuestaJSON(
+    respuesta
+) {
+
+    const texto =
+        await respuesta.text();
+
+
+    if (!texto) {
+        return null;
+    }
+
+
+    try {
+
+        return JSON.parse(
+            texto
+        );
+
+    } catch (error) {
+
+        return {
+            error:
+                texto
+        };
+
+    }
+
+}
+
+
+// =====================================================
+// OBTENER MENSAJE DE ERROR
+// =====================================================
+
+function obtenerMensajeError(
+    datos,
+    mensajePredeterminado
+) {
+
+    if (
+        datos &&
+        typeof datos.error ===
+        "string"
+    ) {
+
+        return datos.error;
+
+    }
+
+
+    if (
+        datos &&
+        datos.error &&
+        typeof datos.error.message ===
+        "string"
+    ) {
+
+        return datos.error.message;
+
+    }
+
+
+    return mensajePredeterminado;
 
 }
 
@@ -273,20 +470,25 @@ function mostrarNoticias(
         return;
     }
 
+
     let html =
         "";
 
-    html +=
-        "<div class='lista-noticias-ai'>";
 
     html +=
-        "<h2>📰 Noticias de hoy</h2>";
+        `
+        <div class="lista-noticias-ai">
 
-    html +=
-        "<p>" +
-        "Selecciona la noticia que quieres preparar " +
-        "para TEOS Gaming." +
-        "</p>";
+            <h2>
+                📰 Noticias recientes
+            </h2>
+
+            <p>
+                Selecciona una noticia para que
+                TEOS AI prepare el artículo.
+            </p>
+        `;
+
 
     noticias.forEach(
         function (
@@ -295,91 +497,124 @@ function mostrarNoticias(
         ) {
 
             html +=
-                "<article class='noticia-ai'>";
+                `
+                <article class="noticia-ai">
 
-            html +=
-                "<label>";
+                    <label>
 
-            html +=
-                "<input type='checkbox' " +
-                "class='seleccionar-noticia' " +
-                "data-indice='" +
-                indice +
-                "'>";
+                        <input
+                            type="checkbox"
+                            class="seleccionar-noticia"
+                            data-indice="${indice}"
+                        >
 
-            html +=
-                "<strong>" +
-                escaparHTML(
-                    noticia.titulo ||
-                    "Sin título"
-                ) +
-                "</strong>";
+                        <strong>
+                            ${escaparHTML(
+                                noticia.titulo ||
+                                "Sin título"
+                            )}
+                        </strong>
 
-            html +=
-                "</label>";
+                    </label>
 
-            html +=
-                "<p>" +
-                escaparHTML(
-                    noticia.descripcion ||
-                    ""
-                ) +
-                "</p>";
+                    ${
+                        noticia.imagen
+                        ?
+                        `
+                        <div class="noticia-ai-imagen">
 
-            html +=
-                "<small>📰 " +
-                escaparHTML(
-                    noticia.fuente ||
-                    "Fuente desconocida"
-                ) +
-                "</small>";
+                            <img
+                                src="${escaparAtributo(
+                                    noticia.imagen
+                                )}"
+                                alt="${escaparAtributo(
+                                    noticia.titulo ||
+                                    "Noticia"
+                                )}"
+                                loading="lazy"
+                            >
 
-            html +=
-                "<br>";
+                        </div>
+                        `
+                        :
+                        ""
+                    }
 
-            html +=
-                "<small>📅 " +
-                escaparHTML(
-                    noticia.fecha ||
-                    "Fecha desconocida"
-                ) +
-                "</small>";
+                    <p>
+                        ${escaparHTML(
+                            noticia.descripcion ||
+                            ""
+                        )}
+                    </p>
 
-            html +=
-                "<br><br>";
+                    <small>
+                        📰
+                        ${escaparHTML(
+                            noticia.fuente ||
+                            "Fuente desconocida"
+                        )}
+                    </small>
 
-            html +=
-                "<a href='" +
-                escaparAtributo(
-                    noticia.enlace
-                ) +
-                "' target='_blank' " +
-                "rel='noopener noreferrer'>" +
-                "Leer fuente →" +
-                "</a>";
+                    <br>
 
-            html +=
-                "</article>";
+                    <small>
+                        📅
+                        ${escaparHTML(
+                            formatearFecha(
+                                noticia.fecha
+                            )
+                        )}
+                    </small>
+
+                    ${
+                        noticia.enlace
+                        ?
+                        `
+                        <br><br>
+
+                        <a
+                            href="${escaparAtributo(
+                                noticia.enlace
+                            )}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Leer fuente →
+                        </a>
+                        `
+                        :
+                        ""
+                    }
+
+                </article>
+                `;
 
         }
     );
 
-    html +=
-        "<button id='prepararArticulo' " +
-        "class='boton-preparar'>" +
-        "🤖 Preparar artículo TEOS" +
-        "</button>";
 
     html +=
-        "</div>";
+        `
+            <button
+                id="prepararArticulo"
+                class="boton-preparar"
+            >
+                🤖 Preparar artículo TEOS
+            </button>
+
+        </div>
+        `;
+
 
     resultado.innerHTML =
         html;
+
 
     const botonPreparar =
         document.getElementById(
             "prepararArticulo"
         );
+
 
     if (botonPreparar) {
 
@@ -389,6 +624,52 @@ function mostrarNoticias(
         );
 
     }
+
+}
+
+
+// =====================================================
+// FORMATEAR FECHA
+// =====================================================
+
+function formatearFecha(
+    fecha
+) {
+
+    if (!fecha) {
+        return "Fecha no disponible";
+    }
+
+
+    const fechaConvertida =
+        new Date(
+            fecha
+        );
+
+
+    if (
+        isNaN(
+            fechaConvertida.getTime()
+        )
+    ) {
+
+        return String(
+            fecha
+        );
+
+    }
+
+
+    return fechaConvertida.toLocaleString(
+        "es-ES",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
 
 }
 
@@ -404,6 +685,7 @@ function escaparHTML(
     if (!texto) {
         return "";
     }
+
 
     return String(texto)
         .replace(
@@ -442,6 +724,7 @@ function escaparAtributo(
         return "#";
     }
 
+
     return String(texto)
         .replace(
             /&/g,
@@ -472,10 +755,12 @@ async function prepararArticulo() {
     const seleccionadas =
         [];
 
+
     const casillas =
         document.querySelectorAll(
             ".seleccionar-noticia"
         );
+
 
     casillas.forEach(
         function (
@@ -490,6 +775,7 @@ async function prepararArticulo() {
                     Number(
                         casilla.dataset.indice
                     );
+
 
                 if (
                     noticiasEncontradas[indice]
@@ -506,6 +792,7 @@ async function prepararArticulo() {
         }
     );
 
+
     if (
         seleccionadas.length === 0
     ) {
@@ -518,18 +805,34 @@ async function prepararArticulo() {
 
     }
 
+
     const noticia =
         seleccionadas[0];
+
 
     if (resultado) {
 
         resultado.innerHTML =
-            "<div class='ai-cargando'>" +
-            "<strong>🤖 TEOS AI</strong>" +
-            "<p>📝 Preparando el artículo...</p>" +
-            "</div>";
+            `
+            <div class="ai-cargando">
+
+                <strong>
+                    🤖 TEOS AI
+                </strong>
+
+                <p>
+                    📝 Preparando el artículo...
+                </p>
+
+                <p>
+                    Un momento...
+                </p>
+
+            </div>
+            `;
 
     }
+
 
     try {
 
@@ -537,187 +840,65 @@ async function prepararArticulo() {
             await fetch(
                 "/api/preparar-articulo",
                 {
-                    method: "POST",
+
+                    method:
+                        "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
                         JSON.stringify(
                             noticia
                         )
+
                 }
             );
 
+
         const datos =
-            await respuesta.json();
+            await leerRespuestaJSON(
+                respuesta
+            );
+
 
         if (!respuesta.ok) {
 
             throw new Error(
-                datos.error ||
-                "No se pudo preparar el artículo."
+                obtenerMensajeError(
+                    datos,
+                    "No se pudo preparar el artículo."
+                )
             );
 
         }
 
-        const articulo =
-            datos;
+
+        if (
+            !datos ||
+            typeof datos !==
+            "object"
+        ) {
+
+            throw new Error(
+                "El servidor no devolvió un artículo válido."
+            );
+
+        }
+
 
         articuloGenerado =
-            articulo;
+            datos;
 
-        if (resultado) {
 
-            resultado.innerHTML = `
+        mostrarArticuloGenerado(
+            datos
+        );
 
-                <div class="vista-previa-articulo">
-
-                    <span class="etiqueta">
-                        🤖 BORRADOR TEOS AI
-                    </span>
-
-                    <h2>
-                        ${escaparHTML(
-                            articulo.titulo
-                        )}
-                    </h2>
-
-                    ${
-                        articulo.imagen
-                        ?
-                        `
-                        <div class="vista-previa-imagen">
-
-                            <img
-                                src="${escaparAtributo(
-                                    articulo.imagen
-                                )}"
-                                alt="${escaparAtributo(
-                                    articulo.titulo
-                                )}"
-                                loading="lazy"
-                            >
-
-                        </div>
-                        `
-                        :
-                        ""
-                    }
-
-                    <h3>
-                        Introducción
-                    </h3>
-
-                    <p>
-                        ${escaparHTML(
-                            articulo.introduccion
-                        )}
-                    </p>
-
-                    <h3>
-                        Desarrollo
-                    </h3>
-
-                    <p>
-                        ${escaparHTML(
-                            articulo.contenido
-                        )}
-                    </p>
-
-                    <h3>
-                        Conclusión
-                    </h3>
-
-                    <p>
-                        ${escaparHTML(
-                            articulo.conclusion
-                        )}
-                    </p>
-
-                    <h3>
-                        Fuente
-                    </h3>
-
-                    <p>
-                        📰 ${escaparHTML(
-                            articulo.fuente
-                        )}
-                    </p>
-
-                    <p>
-
-                        <a
-                            href="${escaparAtributo(
-                                articulo.enlace
-                            )}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            🔗 Ver fuente original
-                        </a>
-
-                    </p>
-
-                    <div class="acciones-articulo">
-
-                        <button
-                            id="volverNoticias"
-                            class="boton-preparar"
-                        >
-                            ← Volver
-                        </button>
-
-                        <button
-                            id="publicarArticulo"
-                            class="boton-preparar"
-                        >
-                            🚀 Publicar
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-
-        const botonVolver =
-            document.getElementById(
-                "volverNoticias"
-            );
-
-        if (botonVolver) {
-
-            botonVolver.addEventListener(
-                "click",
-                function () {
-
-                    mostrarNoticias(
-                        noticiasEncontradas
-                    );
-
-                }
-            );
-
-        }
-
-        const botonPublicar =
-            document.getElementById(
-                "publicarArticulo"
-            );
-
-        if (botonPublicar) {
-
-            botonPublicar.addEventListener(
-                "click",
-                publicarArticulo
-            );
-
-        }
 
     } catch (error) {
 
@@ -726,22 +907,210 @@ async function prepararArticulo() {
             error
         );
 
+
         if (resultado) {
 
             resultado.innerHTML =
-                "<div class='ai-error'>" +
-                "<strong>" +
-                "❌ No se pudo preparar el artículo." +
-                "</strong>" +
-                "<p>" +
-                escaparHTML(
-                    error.message ||
-                    "Error preparando el artículo."
-                ) +
-                "</p>" +
-                "</div>";
+                `
+                <div class="ai-error">
+
+                    <strong>
+                        ❌ No se pudo preparar el artículo.
+                    </strong>
+
+                    <p>
+                        ${escaparHTML(
+                            error.message ||
+                            "Error desconocido."
+                        )}
+                    </p>
+
+                </div>
+                `;
 
         }
+
+    }
+
+}
+
+
+// =====================================================
+// MOSTRAR ARTÍCULO GENERADO
+// =====================================================
+
+function mostrarArticuloGenerado(
+    articulo
+) {
+
+    if (!resultado) {
+        return;
+    }
+
+
+    resultado.innerHTML =
+        `
+
+        <div class="vista-previa-articulo">
+
+            <span class="etiqueta">
+                🤖 BORRADOR TEOS AI
+            </span>
+
+            <h2>
+                ${escaparHTML(
+                    articulo.titulo ||
+                    "Sin título"
+                )}
+            </h2>
+
+            ${
+                articulo.imagen
+                ?
+                `
+                <div class="vista-previa-imagen">
+
+                    <img
+                        src="${escaparAtributo(
+                            articulo.imagen
+                        )}"
+                        alt="${escaparAtributo(
+                            articulo.titulo ||
+                            "Imagen del artículo"
+                        )}"
+                        loading="lazy"
+                    >
+
+                </div>
+                `
+                :
+                ""
+            }
+
+            <h3>
+                Introducción
+            </h3>
+
+            <p>
+                ${escaparHTML(
+                    articulo.introduccion ||
+                    ""
+                )}
+            </p>
+
+            <h3>
+                Desarrollo
+            </h3>
+
+            <p>
+                ${escaparHTML(
+                    articulo.contenido ||
+                    ""
+                )}
+            </p>
+
+            <h3>
+                Conclusión
+            </h3>
+
+            <p>
+                ${escaparHTML(
+                    articulo.conclusion ||
+                    ""
+                )}
+            </p>
+
+            <h3>
+                Fuente
+            </h3>
+
+            <p>
+                📰
+                ${escaparHTML(
+                    articulo.fuente ||
+                    "Fuente desconocida"
+                )}
+            </p>
+
+            ${
+                articulo.enlace
+                ?
+                `
+                <p>
+
+                    <a
+                        href="${escaparAtributo(
+                            articulo.enlace
+                        )}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        🔗 Ver fuente original
+                    </a>
+
+                </p>
+                `
+                :
+                ""
+            }
+
+            <div class="acciones-articulo">
+
+                <button
+                    id="volverNoticias"
+                    class="boton-preparar"
+                >
+                    ← Volver
+                </button>
+
+                <button
+                    id="publicarArticulo"
+                    class="boton-preparar"
+                >
+                    🚀 Publicar
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+
+    const botonVolver =
+        document.getElementById(
+            "volverNoticias"
+        );
+
+
+    if (botonVolver) {
+
+        botonVolver.addEventListener(
+            "click",
+            function () {
+
+                mostrarNoticias(
+                    noticiasEncontradas
+                );
+
+            }
+        );
+
+    }
+
+
+    const botonPublicar =
+        document.getElementById(
+            "publicarArticulo"
+        );
+
+
+    if (botonPublicar) {
+
+        botonPublicar.addEventListener(
+            "click",
+            publicarArticulo
+        );
 
     }
 
@@ -759,68 +1128,81 @@ async function publicarArticulo() {
             "publicarArticulo"
         );
 
+
     if (!boton) {
         return;
     }
 
+
+    if (
+        !articuloGenerado
+    ) {
+
+        alert(
+            "No hay un artículo preparado para publicar."
+        );
+
+        return;
+
+    }
+
+
     boton.disabled =
         true;
+
 
     boton.textContent =
         "⏳ Publicando...";
 
+
     try {
-
-        const noticiaParaPublicar =
-            {
-                ...(articuloGenerado || {})
-            };
-
-        console.log(
-            "🖼️ IMAGEN QUE SE VA A PUBLICAR:",
-            noticiaParaPublicar.imagen
-        );
-
-        console.log(
-            "🎨 PROMPT DE IMAGEN:",
-            noticiaParaPublicar.imagenPrompt
-        );
 
         const respuesta =
             await fetch(
                 "/api/publicar-articulo",
                 {
 
-                    method: "POST",
+                    method:
+                        "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
                         JSON.stringify(
-                            noticiaParaPublicar
+                            articuloGenerado
                         )
 
                 }
             );
 
+
         const datos =
-            await respuesta.json();
+            await leerRespuestaJSON(
+                respuesta
+            );
+
 
         if (!respuesta.ok) {
 
             throw new Error(
-                datos.error ||
-                "No se pudo publicar."
+                obtenerMensajeError(
+                    datos,
+                    "No se pudo publicar el artículo."
+                )
             );
 
         }
 
+
         if (resultado) {
 
-            resultado.innerHTML = `
+            resultado.innerHTML =
+                `
 
                 <div class="ai-exito">
 
@@ -831,29 +1213,43 @@ async function publicarArticulo() {
                     <p>
                         ${escaparHTML(
                             datos.mensaje ||
-                            "Noticia publicada correctamente."
+                            "La noticia fue publicada correctamente."
                         )}
                     </p>
 
-                    <p>
-                        📄 Archivo:
-                        <strong>
-                            ${escaparHTML(
-                                datos.archivo ||
-                                ""
-                            )}
-                        </strong>
-                    </p>
+                    ${
+                        datos.archivo
+                        ?
+                        `
+                        <p>
+                            📄 Archivo:
+                            <strong>
+                                ${escaparHTML(
+                                    datos.archivo
+                                )}
+                            </strong>
+                        </p>
+                        `
+                        :
+                        ""
+                    }
 
-                    <p>
-                        📁 Ubicación:
-                        <strong>
-                            ${escaparHTML(
-                                datos.ruta ||
-                                ""
-                            )}
-                        </strong>
-                    </p>
+                    ${
+                        datos.ruta
+                        ?
+                        `
+                        <p>
+                            📁 Ubicación:
+                            <strong>
+                                ${escaparHTML(
+                                    datos.ruta
+                                )}
+                            </strong>
+                        </p>
+                        `
+                        :
+                        ""
+                    }
 
                     <button
                         id="volverNoticias"
@@ -864,14 +1260,16 @@ async function publicarArticulo() {
 
                 </div>
 
-            `;
+                `;
 
         }
+
 
         const botonVolver =
             document.getElementById(
                 "volverNoticias"
             );
+
 
         if (botonVolver) {
 
@@ -888,6 +1286,7 @@ async function publicarArticulo() {
 
         }
 
+
     } catch (error) {
 
         console.error(
@@ -895,11 +1294,14 @@ async function publicarArticulo() {
             error
         );
 
+
         boton.disabled =
             false;
 
+
         boton.textContent =
             "🚀 Publicar";
+
 
         alert(
             "❌ " +
@@ -928,6 +1330,7 @@ const resultadoRankings =
         "resultadoRankings"
     );
 
+
 let rankingsGenerados =
     null;
 
@@ -936,7 +1339,9 @@ let rankingsGenerados =
 // EVENTO PREPARAR RANKINGS
 // =====================================================
 
-if (botonPrepararRankings) {
+if (
+    botonPrepararRankings
+) {
 
     botonPrepararRankings.addEventListener(
         "click",
@@ -956,6 +1361,7 @@ async function prepararRankings() {
         return;
     }
 
+
     if (botonPrepararRankings) {
 
         botonPrepararRankings.disabled =
@@ -966,7 +1372,9 @@ async function prepararRankings() {
 
     }
 
-    resultadoRankings.innerHTML = `
+
+    resultadoRankings.innerHTML =
+        `
 
         <div class="ai-cargando">
 
@@ -984,7 +1392,8 @@ async function prepararRankings() {
 
         </div>
 
-    `;
+        `;
+
 
     try {
 
@@ -993,11 +1402,14 @@ async function prepararRankings() {
                 "/api/preparar-rankings",
                 {
 
-                    method: "POST",
+                    method:
+                        "POST",
 
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
@@ -1005,30 +1417,38 @@ async function prepararRankings() {
                 }
             );
 
+
         const datos =
-            await respuesta.json();
+            await leerRespuestaJSON(
+                respuesta
+            );
+
 
         if (!respuesta.ok) {
 
             throw new Error(
-                datos.error ||
-                "No se pudieron preparar los rankings."
+                obtenerMensajeError(
+                    datos,
+                    "No se pudieron preparar los rankings."
+                )
             );
 
         }
 
+
         if (
-            !datos.rankings ||
+            !datos ||
             !Array.isArray(
                 datos.rankings
             )
         ) {
 
             throw new Error(
-                "El servidor no devolvió rankings."
+                "El servidor no devolvió los rankings correctamente."
             );
 
         }
+
 
         if (
             datos.rankings.length !== 10
@@ -1040,12 +1460,15 @@ async function prepararRankings() {
 
         }
 
+
         rankingsGenerados =
             datos.rankings;
+
 
         mostrarRankings(
             rankingsGenerados
         );
+
 
     } catch (error) {
 
@@ -1054,7 +1477,9 @@ async function prepararRankings() {
             error
         );
 
-        resultadoRankings.innerHTML = `
+
+        resultadoRankings.innerHTML =
+            `
 
             <div class="ai-error">
 
@@ -1071,7 +1496,7 @@ async function prepararRankings() {
 
             </div>
 
-        `;
+            `;
 
     } finally {
 
@@ -1102,10 +1527,9 @@ function mostrarRankings(
         return;
     }
 
-    let html =
-        "";
 
-    html += `
+    let html =
+        `
 
         <div class="lista-rankings-ai">
 
@@ -1121,7 +1545,8 @@ function mostrarRankings(
                 Revisa el contenido antes de publicarlo.
             </p>
 
-    `;
+        `;
+
 
     rankings.forEach(
         function (
@@ -1129,12 +1554,14 @@ function mostrarRankings(
             indice
         ) {
 
-            html += `
+            html +=
+                `
 
                 <article class="ranking-ai">
 
                     <h2>
-                        🏆 Ranking ${indice + 1}
+                        🏆 Ranking
+                        ${indice + 1}
                     </h2>
 
                     <h3>
@@ -1160,7 +1587,8 @@ function mostrarRankings(
 
                     <div class="juegos-ranking-ai">
 
-            `;
+                `;
+
 
             if (
                 ranking.juegos &&
@@ -1176,6 +1604,7 @@ function mostrarRankings(
 
                         let emoji =
                             "";
+
 
                         if (
                             juego.puesto === 1
@@ -1202,7 +1631,9 @@ function mostrarRankings(
 
                         }
 
-                        html += `
+
+                        html +=
+                            `
 
                             <div class="juego-ranking-ai">
 
@@ -1214,7 +1645,8 @@ function mostrarRankings(
                                     )}
                                     —
                                     ${escaparHTML(
-                                        juego.nombre
+                                        juego.nombre ||
+                                        "Sin nombre"
                                     )}
 
                                 </strong>
@@ -1223,7 +1655,8 @@ function mostrarRankings(
 
                                     ⭐
                                     ${escaparHTML(
-                                        juego.puntuacion
+                                        juego.puntuacion ||
+                                        ""
                                     )}
 
                                 </span>
@@ -1231,21 +1664,24 @@ function mostrarRankings(
                                 <p>
 
                                     ${escaparHTML(
-                                        juego.descripcion
+                                        juego.descripcion ||
+                                        ""
                                     )}
 
                                 </p>
 
                             </div>
 
-                        `;
+                            `;
 
                     }
                 );
 
             }
 
-            html += `
+
+            html +=
+                `
 
                     </div>
 
@@ -1287,12 +1723,14 @@ function mostrarRankings(
 
                 </article>
 
-            `;
+                `;
 
         }
     );
 
-    html += `
+
+    html +=
+        `
 
             <div class="acciones-rankings">
 
@@ -1314,17 +1752,22 @@ function mostrarRankings(
 
         </div>
 
-    `;
+        `;
+
 
     resultadoRankings.innerHTML =
         html;
+
 
     const botonRegenerar =
         document.getElementById(
             "volverPrepararRankings"
         );
 
-    if (botonRegenerar) {
+
+    if (
+        botonRegenerar
+    ) {
 
         botonRegenerar.addEventListener(
             "click",
@@ -1333,12 +1776,16 @@ function mostrarRankings(
 
     }
 
+
     const botonPublicar =
         document.getElementById(
             "publicarRankings"
         );
 
-    if (botonPublicar) {
+
+    if (
+        botonPublicar
+    ) {
 
         botonPublicar.addEventListener(
             "click",
@@ -1371,6 +1818,7 @@ async function publicarRankings() {
 
     }
 
+
     if (
         rankingsGenerados.length !== 10
     ) {
@@ -1383,20 +1831,24 @@ async function publicarRankings() {
 
     }
 
+
     const confirmar =
         confirm(
             "⚠️ ¿Seguro que quieres publicar los 10 rankings?\n\n" +
             "Esto reemplazará el contenido actual de ranking1.html hasta ranking10.html."
         );
 
+
     if (!confirmar) {
         return;
     }
+
 
     const boton =
         document.getElementById(
             "publicarRankings"
         );
+
 
     if (boton) {
 
@@ -1408,6 +1860,7 @@ async function publicarRankings() {
 
     }
 
+
     try {
 
         const respuesta =
@@ -1415,7 +1868,8 @@ async function publicarRankings() {
                 "/api/publicar-rankings",
                 {
 
-                    method: "POST",
+                    method:
+                        "POST",
 
                     headers: {
 
@@ -1435,19 +1889,27 @@ async function publicarRankings() {
                 }
             );
 
+
         const datos =
-            await respuesta.json();
+            await leerRespuestaJSON(
+                respuesta
+            );
+
 
         if (!respuesta.ok) {
 
             throw new Error(
-                datos.error ||
-                "No se pudieron publicar los rankings."
+                obtenerMensajeError(
+                    datos,
+                    "No se pudieron publicar los rankings."
+                )
             );
 
         }
 
-        resultadoRankings.innerHTML = `
+
+        resultadoRankings.innerHTML =
+            `
 
             <div class="ai-exito">
 
@@ -1460,21 +1922,50 @@ async function publicarRankings() {
                 </p>
 
                 <p>
-                    TEOS AI reemplazó:
+                    TEOS AI actualizó:
                 </p>
 
                 <ul>
 
-                    <li>ranking1.html</li>
-                    <li>ranking2.html</li>
-                    <li>ranking3.html</li>
-                    <li>ranking4.html</li>
-                    <li>ranking5.html</li>
-                    <li>ranking6.html</li>
-                    <li>ranking7.html</li>
-                    <li>ranking8.html</li>
-                    <li>ranking9.html</li>
-                    <li>ranking10.html</li>
+                    <li>
+                        ranking1.html
+                    </li>
+
+                    <li>
+                        ranking2.html
+                    </li>
+
+                    <li>
+                        ranking3.html
+                    </li>
+
+                    <li>
+                        ranking4.html
+                    </li>
+
+                    <li>
+                        ranking5.html
+                    </li>
+
+                    <li>
+                        ranking6.html
+                    </li>
+
+                    <li>
+                        ranking7.html
+                    </li>
+
+                    <li>
+                        ranking8.html
+                    </li>
+
+                    <li>
+                        ranking9.html
+                    </li>
+
+                    <li>
+                        ranking10.html
+                    </li>
 
                 </ul>
 
@@ -1487,12 +1978,14 @@ async function publicarRankings() {
 
             </div>
 
-        `;
+            `;
+
 
         const botonVolver =
             document.getElementById(
                 "volverRankings"
             );
+
 
         if (botonVolver) {
 
@@ -1500,19 +1993,21 @@ async function publicarRankings() {
                 "click",
                 function () {
 
-                    resultadoRankings.innerHTML = `
+                    resultadoRankings.innerHTML =
+                        `
 
                         <p>
                             Pulsa el botón para que TEOS AI
                             prepare los 10 rankings.
                         </p>
 
-                    `;
+                        `;
 
                 }
             );
 
         }
+
 
     } catch (error) {
 
@@ -1520,6 +2015,7 @@ async function publicarRankings() {
             "❌ Error publicando rankings:",
             error
         );
+
 
         if (boton) {
 
@@ -1531,7 +2027,9 @@ async function publicarRankings() {
 
         }
 
-        resultadoRankings.innerHTML = `
+
+        resultadoRankings.innerHTML =
+            `
 
             <div class="ai-error">
 
@@ -1548,7 +2046,7 @@ async function publicarRankings() {
 
             </div>
 
-        `;
+            `;
 
     }
 
