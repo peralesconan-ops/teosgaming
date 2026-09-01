@@ -10,22 +10,19 @@ const fs = require("fs");
 const path = require("path");
 const { GoogleGenAI } = require("@google/genai");
 
-// =====================================================
-// CARGAR .ENV SI EXISTE
-// =====================================================
-
 try {
     require("dotenv").config();
 } catch (error) {
-    // En Render las variables llegan directamente
-    // mediante Environment Variables.
+    // En Render las variables llegan directamente.
 }
+
 
 // =====================================================
 // CONFIGURACIÓN
 // =====================================================
 
 const app = express();
+
 const parser = new Parser({
     timeout: 15000,
     headers: {
@@ -46,14 +43,12 @@ app.use(
     express.static(__dirname)
 );
 
-// Render asigna PORT automáticamente.
-// Localmente seguirá usando 3000.
 const PORT =
     process.env.PORT || 3000;
 
 
 // =====================================================
-// GEMINI AI
+// GEMINI
 // =====================================================
 
 const GEMINI_API_KEY =
@@ -68,12 +63,31 @@ const ai =
 
 
 // =====================================================
+// ESTADO DE RANKINGS
+// =====================================================
+
+let estadoRankings = {
+    estado: "idle",
+    rankings: null,
+    error: null,
+    iniciado: null,
+    terminado: null
+};
+
+let generandoRankings =
+    false;
+
+
+// =====================================================
 // FUNCIÓN GEMINI
 // =====================================================
 
 async function generarConGemini(prompt) {
 
-    if (!GEMINI_API_KEY || !ai) {
+    if (
+        !GEMINI_API_KEY ||
+        !ai
+    ) {
 
         throw new Error(
             "La variable GEMINI_API_KEY no está configurada."
@@ -82,143 +96,75 @@ async function generarConGemini(prompt) {
     }
 
 
-    const modelos = [
-
-        "gemini-3.7-flash",
-        "gemini-3.6-flash",
-        "gemini-3.5-flash"
-
-    ];
+    console.log(
+        "🤖 Intentando Gemini: gemini-3.6-flash"
+    );
 
 
-    let ultimoError = null;
+    try {
+
+        const respuesta =
+            await ai.models.generateContent({
+
+                model:
+                    "gemini-3.6-flash",
+
+                contents:
+                    prompt,
+
+                config: {
+                    responseMimeType:
+                        "application/json"
+                }
+
+            });
 
 
-    for (
-        const modelo of modelos
-    ) {
+        const texto =
+            respuesta.text;
 
-        try {
 
-            console.log(
-                "🤖 Intentando Gemini:",
-                modelo
+        if (!texto) {
+
+            throw new Error(
+                "Gemini no devolvió contenido."
             );
-
-
-            const respuesta =
-                await ai.models.generateContent({
-
-                    model:
-                        modelo,
-
-                    contents:
-                        prompt,
-
-                    config: {
-
-                        responseMimeType:
-                            "application/json"
-
-                    }
-
-                });
-
-
-            const texto =
-                respuesta.text;
-
-
-            if (!texto) {
-
-                throw new Error(
-                    "Gemini no devolvió contenido."
-                );
-
-            }
-
-
-            console.log(
-                "✅ Gemini respondió usando:",
-                modelo
-            );
-
-
-            return texto
-                .trim()
-                .replace(
-                    /^```json/i,
-                    ""
-                )
-                .replace(
-                    /^```/i,
-                    ""
-                )
-                .replace(
-                    /```$/i,
-                    ""
-                )
-                .trim();
-
-
-        } catch (error) {
-
-            ultimoError =
-                error;
-
-
-            const mensaje =
-                String(
-                    error.message ||
-                    error
-                );
-
-
-            console.error(
-                "❌ Error con",
-                modelo,
-                ":",
-                mensaje
-            );
-
-
-            // Si el modelo está saturado,
-            // probar el siguiente modelo.
-            if (
-                mensaje.includes("503") ||
-                mensaje.includes("UNAVAILABLE") ||
-                mensaje.includes("high demand") ||
-                mensaje.includes("overloaded")
-            ) {
-
-                console.log(
-                    "🔄 Modelo saturado. Probando siguiente modelo..."
-                );
-
-                continue;
-
-            }
-
-
-            // Para errores de autenticación,
-            // permisos, clave, etc., no tiene
-            // sentido probar otros modelos.
-            throw error;
 
         }
 
+
+        console.log(
+            "✅ Gemini respondió usando: gemini-3.6-flash"
+        );
+
+
+        return texto
+            .trim()
+            .replace(
+                /^```json/i,
+                ""
+            )
+            .replace(
+                /^```/i,
+                ""
+            )
+            .replace(
+                /```$/i,
+                ""
+            )
+            .trim();
+
+    } catch (error) {
+
+        console.error(
+            "❌ Error con gemini-3.6-flash:",
+            error.message ||
+            error
+        );
+
+        throw error;
+
     }
-
-
-    throw new Error(
-        "Gemini no está disponible en este momento. " +
-        "Los modelos configurados devolvieron error. " +
-        "Último error: " +
-        (
-            ultimoError?.message ||
-            "Error desconocido."
-        )
-    );
 
 }
 
@@ -257,7 +203,7 @@ const fuentes = [
 
 
 // =====================================================
-// EXTRAER IMAGEN DEL RSS
+// OBTENER IMAGEN RSS
 // =====================================================
 
 function obtenerImagenRSS(item) {
@@ -325,9 +271,7 @@ function obtenerImagenRSS(item) {
             imagen =
                 item.image;
 
-        }
-
-        else if (
+        } else if (
             item.image.url
         ) {
 
@@ -339,19 +283,20 @@ function obtenerImagenRSS(item) {
     }
 
 
-    // Buscar <img src=""> dentro del contenido
     if (!imagen) {
 
-        const contenidoRSS =
+        const contenido =
             item["content:encoded"] ||
             item.content ||
             item.description ||
             "";
 
+
         const coincidencia =
-            contenidoRSS.match(
+            contenido.match(
                 /<img[^>]+src=["']([^"']+)["']/i
             );
+
 
         if (coincidencia) {
 
@@ -371,36 +316,35 @@ function obtenerImagenRSS(item) {
 
 
 // =====================================================
-// CONVERTIR FECHA
+// OBTENER FECHA RSS
 // =====================================================
 
 function obtenerFechaItem(item) {
 
-    const posiblesFechas = [
+    const fechas = [
 
         item.isoDate,
-
         item.pubDate,
-
         item.date,
-
         item.updated,
-
         item.published
 
     ];
 
+
     for (
         const valor
-        of posiblesFechas
+        of fechas
     ) {
 
         if (!valor) {
             continue;
         }
 
+
         const fecha =
             new Date(valor);
+
 
         if (
             !isNaN(
@@ -413,6 +357,7 @@ function obtenerFechaItem(item) {
         }
 
     }
+
 
     return null;
 
@@ -429,6 +374,7 @@ function limpiarTexto(texto) {
         return "";
     }
 
+
     return String(texto)
         .replace(
             /<[^>]*>/g,
@@ -444,24 +390,22 @@ function limpiarTexto(texto) {
 
 
 // =====================================================
-// API DE NOTICIAS
+// OBTENER NOTICIAS
 // =====================================================
 
 app.get(
     "/api/noticias",
-    async (req, res) => {
+    async function(req, res) {
 
         try {
 
-            const resultados = [];
+            const resultados =
+                [];
 
             const ahora =
                 Date.now();
 
-            // Últimas 48 horas.
-            // Esto evita perder noticias por diferencias
-            // de zona horaria o feeds que publican cerca
-            // del cambio de día.
+
             const limite =
                 ahora -
                 (
@@ -484,6 +428,7 @@ app.get(
                         fuente.nombre
                     );
 
+
                     const feed =
                         await parser.parseURL(
                             fuente.url
@@ -496,11 +441,6 @@ app.get(
                             feed.items
                         )
                     ) {
-
-                        console.log(
-                            "⚠️ Feed sin artículos:",
-                            fuente.nombre
-                        );
 
                         continue;
 
@@ -517,9 +457,7 @@ app.get(
 
 
                             if (!fecha) {
-
                                 return;
-
                             }
 
 
@@ -549,32 +487,14 @@ app.get(
                             }
 
 
-                            const enlace =
-                                item.link ||
-                                item.guid ||
-                                "";
-
-
-                            const descripcion =
-                                limpiarTexto(
-                                    item.contentSnippet ||
-                                    item.description ||
-                                    item.summary ||
-                                    ""
-                                );
-
-
-                            const imagen =
-                                obtenerImagenRSS(
-                                    item
-                                );
-
-
                             resultados.push({
 
                                 titulo,
 
-                                enlace,
+                                enlace:
+                                    item.link ||
+                                    item.guid ||
+                                    "",
 
                                 fecha:
                                     fecha.toISOString(),
@@ -582,9 +502,18 @@ app.get(
                                 fuente:
                                     fuente.nombre,
 
-                                descripcion,
+                                descripcion:
+                                    limpiarTexto(
+                                        item.contentSnippet ||
+                                        item.description ||
+                                        item.summary ||
+                                        ""
+                                    ),
 
-                                imagen
+                                imagen:
+                                    obtenerImagenRSS(
+                                        item
+                                    )
 
                             });
 
@@ -593,9 +522,8 @@ app.get(
 
 
                     console.log(
-                        "✅ Artículos leídos de",
+                        "✅ Feed leído:",
                         fuente.nombre,
-                        ":",
                         feed.items.length
                     );
 
@@ -603,11 +531,9 @@ app.get(
                 } catch (error) {
 
                     console.error(
-                        "❌ No se pudo leer:",
-                        fuente.nombre
-                    );
-
-                    console.error(
+                        "❌ Error leyendo",
+                        fuente.nombre,
+                        ":",
                         error.message
                     );
 
@@ -616,15 +542,11 @@ app.get(
             }
 
 
-            // =================================================
-            // ELIMINAR DUPLICADOS
-            // =================================================
+            const vistos =
+                new Set();
 
             const noticiasUnicas =
                 [];
-
-            const vistos =
-                new Set();
 
 
             for (
@@ -633,12 +555,9 @@ app.get(
             ) {
 
                 const clave =
-                    (
-                        noticia.titulo ||
-                        ""
-                    )
-                    .trim()
-                    .toLowerCase();
+                    noticia.titulo
+                        .trim()
+                        .toLowerCase();
 
 
                 if (
@@ -655,16 +574,13 @@ app.get(
                     clave
                 );
 
+
                 noticiasUnicas.push(
                     noticia
                 );
 
             }
 
-
-            // =================================================
-            // ORDENAR
-            // =================================================
 
             noticiasUnicas.sort(
                 function(a, b) {
@@ -678,32 +594,21 @@ app.get(
             );
 
 
-            // Limitar para que el panel no quede
-            // cargado con demasiados artículos.
-            const noticiasFinales =
+            res.json(
                 noticiasUnicas.slice(
                     0,
                     30
-                );
-
-
-            console.log(
-                "📰 Noticias encontradas:",
-                noticiasFinales.length
-            );
-
-
-            res.json(
-                noticiasFinales
+                )
             );
 
 
         } catch (error) {
 
             console.error(
-                "❌ Error obteniendo noticias:",
+                "❌ Error general de noticias:",
                 error
             );
+
 
             res.status(
                 500
@@ -721,12 +626,12 @@ app.get(
 
 
 // =====================================================
-// PREPARAR ARTÍCULO CON GEMINI
+// PREPARAR ARTÍCULO
 // =====================================================
 
 app.post(
     "/api/preparar-articulo",
-    async (req, res) => {
+    async function(req, res) {
 
         try {
 
@@ -745,22 +650,6 @@ app.post(
 
                         error:
                             "No se recibió una noticia válida."
-
-                    });
-
-            }
-
-
-            if (
-                !GEMINI_API_KEY
-            ) {
-
-                return res
-                    .status(500)
-                    .json({
-
-                        error:
-                            "La variable GEMINI_API_KEY no está configurada en Render."
 
                     });
 
@@ -792,8 +681,8 @@ app.post(
 Eres el redactor principal de TEOS Gaming,
 un medio digital especializado en videojuegos.
 
-Debes convertir la siguiente noticia en un artículo
-profesional en español.
+Convierte la siguiente noticia en un artículo profesional
+en español.
 
 REGLAS:
 
@@ -803,14 +692,9 @@ REGLAS:
 - No inventes nombres.
 - Utiliza únicamente la información proporcionada.
 - Escribe de forma natural y profesional.
-- El texto debe parecer escrito por un periodista de videojuegos.
-- No menciones que eres una inteligencia artificial.
-- No digas "según una IA".
-- No copies literalmente la descripción.
-- Puedes reorganizar y desarrollar la información proporcionada.
 - Mantén un tono interesante para jugadores.
-- El artículo debe ser fácil de leer.
-- Evita repetir innecesariamente las mismas frases.
+- No menciones que eres una inteligencia artificial.
+- No copies literalmente la descripción.
 - No agregues información que no aparezca en los datos originales.
 
 NOTICIA ORIGINAL:
@@ -827,19 +711,16 @@ ${fuente}
 Enlace:
 ${enlace}
 
-Devuelve únicamente un JSON válido con esta estructura:
+Devuelve ÚNICAMENTE JSON válido:
 
 {
-    "titulo": "Título de la noticia",
-    "introduccion": "Introducción del artículo",
-    "contenido": "Desarrollo completo del artículo",
-    "conclusion": "Conclusión del artículo",
-    "imagenPrompt": "Descripción de una imagen relacionada con esta noticia"
+    "titulo": "Título",
+    "introduccion": "Introducción",
+    "contenido": "Desarrollo",
+    "conclusion": "Conclusión",
+    "imagenPrompt": "Descripción de imagen"
 }
 
-No agregues Markdown.
-No agregues bloques de código.
-No agregues explicaciones fuera del JSON.
 `;
 
 
@@ -851,6 +732,7 @@ No agregues explicaciones fuera del JSON.
 
             let articuloIA;
 
+
             try {
 
                 articuloIA =
@@ -860,14 +742,6 @@ No agregues explicaciones fuera del JSON.
 
             } catch (error) {
 
-                console.error(
-                    "❌ JSON recibido de Gemini:"
-                );
-
-                console.error(
-                    texto
-                );
-
                 throw new Error(
                     "Gemini no devolvió un JSON válido."
                 );
@@ -875,7 +749,7 @@ No agregues explicaciones fuera del JSON.
             }
 
 
-            const articulo = {
+            res.json({
 
                 titulo:
                     articuloIA.titulo ||
@@ -887,11 +761,11 @@ No agregues explicaciones fuera del JSON.
 
                 contenido:
                     articuloIA.contenido ||
-                    "No se pudo generar el contenido.",
+                    "",
 
                 conclusion:
                     articuloIA.conclusion ||
-                    "Seguiremos atentos a las novedades.",
+                    "",
 
                 imagen:
                     imagen,
@@ -910,12 +784,7 @@ No agregues explicaciones fuera del JSON.
                     noticia.fecha ||
                     new Date().toISOString()
 
-            };
-
-
-            res.json(
-                articulo
-            );
+            });
 
 
         } catch (error) {
@@ -924,6 +793,7 @@ No agregues explicaciones fuera del JSON.
                 "❌ Error preparando artículo:",
                 error
             );
+
 
             res.status(
                 500
@@ -947,7 +817,7 @@ No agregues explicaciones fuera del JSON.
 
 app.post(
     "/api/publicar-articulo",
-    (req, res) => {
+    function(req, res) {
 
         try {
 
@@ -988,7 +858,8 @@ app.post(
                 fs.mkdirSync(
                     carpetaNoticias,
                     {
-                        recursive: true
+                        recursive:
+                            true
                     }
                 );
 
@@ -1020,13 +891,16 @@ app.post(
 
 
             if (!slug) {
+
                 slug =
                     "noticia-teos";
+
             }
 
 
             let nombreArchivo =
-                slug + ".html";
+                slug +
+                ".html";
 
 
             let rutaArchivo =
@@ -1063,20 +937,6 @@ app.post(
             }
 
 
-            const fecha =
-                articulo.fecha ||
-                new Date().toISOString();
-
-
-            const imagen =
-                articulo.imagen ||
-                "";
-
-            const enlace =
-                articulo.enlace ||
-                "#";
-
-
             function escaparHTML(
                 texto
             ) {
@@ -1085,7 +945,10 @@ app.post(
                     return "";
                 }
 
-                return String(texto)
+
+                return String(
+                    texto
+                )
                     .replace(
                         /&/g,
                         "&amp;"
@@ -1143,13 +1006,15 @@ app.post(
 
             const fechaHTML =
                 escaparHTML(
-                    fecha
+                    articulo.fecha ||
+                    new Date().toISOString()
                 );
 
 
             const enlaceHTML =
                 escaparHTML(
-                    enlace
+                    articulo.enlace ||
+                    "#"
                 );
 
 
@@ -1157,14 +1022,16 @@ app.post(
                 "";
 
 
-            if (imagen) {
+            if (
+                articulo.imagen
+            ) {
 
                 imagenHTML = `
 
                     <div class="imagen-articulo-contenedor">
 
                         <img
-                            src="${imagen}"
+                            src="${articulo.imagen}"
                             alt="${tituloHTML}"
                             class="imagen-articulo"
                             loading="lazy"
@@ -1216,33 +1083,13 @@ app.post(
 
     <nav class="menu">
 
-        <a href="../index.html">
-            Inicio
-        </a>
-
-        <a href="../noticias.html">
-            Noticias
-        </a>
-
-        <a href="../lanzamientos.html">
-            Lanzamientos
-        </a>
-
-        <a href="../guias.html">
-            Guías
-        </a>
-
-        <a href="../rankings.html">
-            Rankings
-        </a>
-
-        <a href="../pc.html">
-            PC
-        </a>
-
-        <a href="../android.html">
-            Android
-        </a>
+        <a href="../index.html">Inicio</a>
+        <a href="../noticias.html">Noticias</a>
+        <a href="../lanzamientos.html">Lanzamientos</a>
+        <a href="../guias.html">Guías</a>
+        <a href="../rankings.html">Rankings</a>
+        <a href="../pc.html">PC</a>
+        <a href="../android.html">Android</a>
 
     </nav>
 
@@ -1273,25 +1120,19 @@ app.post(
 
         <div class="articulo-contenido">
 
-            <h2>
-                Introducción
-            </h2>
+            <h2>Introducción</h2>
 
             <p>
                 ${introduccionHTML}
             </p>
 
-            <h2>
-                Desarrollo
-            </h2>
+            <h2>Desarrollo</h2>
 
             <p>
                 ${contenidoHTML}
             </p>
 
-            <h2>
-                Conclusión
-            </h2>
+            <h2>Conclusión</h2>
 
             <p>
                 ${conclusionHTML}
@@ -1299,9 +1140,7 @@ app.post(
 
             <div class="fuentes">
 
-                <h2>
-                    Fuente
-                </h2>
+                <h2>Fuente</h2>
 
                 <p>
                     📰 ${fuenteHTML}
@@ -1382,7 +1221,8 @@ app.post(
                     nombreArchivo,
 
                 imagen:
-                    imagen
+                    articulo.imagen ||
+                    ""
 
             });
 
@@ -1393,6 +1233,7 @@ app.post(
                 "❌ Error publicando artículo:",
                 error
             );
+
 
             res.status(
                 500
@@ -1416,7 +1257,7 @@ app.post(
 
 app.get(
     "/api/noticias-publicadas",
-    (req, res) => {
+    function(req, res) {
 
         try {
 
@@ -1575,6 +1416,7 @@ app.get(
                 error
             );
 
+
             res.status(
                 500
             ).json({
@@ -1591,7 +1433,7 @@ app.get(
 
 
 // =====================================================
-// CONVERTIR FECHA DE NOTICIA PUBLICADA
+// CONVERTIR FECHA PUBLICADA
 // =====================================================
 
 function convertirFechaPublicada(
@@ -1655,67 +1497,13 @@ function convertirFechaPublicada(
     }
 
 
-    const meses = {
-
-        enero: 0,
-        febrero: 1,
-        marzo: 2,
-        abril: 3,
-        mayo: 4,
-        junio: 5,
-        julio: 6,
-        agosto: 7,
-        septiembre: 8,
-        octubre: 9,
-        noviembre: 10,
-        diciembre: 11
-
-    };
-
-
-    const largo =
-        texto.match(
-            /(\d{1,2})\s+de\s+([a-záéíóú]+)\s+de\s+(\d{4})/i
-        );
-
-
-    if (largo) {
-
-        const mes =
-            meses[
-                largo[2]
-                    .toLowerCase()
-            ];
-
-
-        if (
-            mes !== undefined
-        ) {
-
-            return new Date(
-                parseInt(
-                    largo[3],
-                    10
-                ),
-                mes,
-                parseInt(
-                    largo[1],
-                    10
-                )
-            ).getTime();
-
-        }
-
-    }
-
-
     return 0;
 
 }
 
 
 // =====================================================
-// TEMAS DE LOS 10 RANKINGS
+// TEMAS DE RANKINGS
 // =====================================================
 
 const temasRankings = [
@@ -1784,46 +1572,61 @@ const temasRankings = [
 
 
 // =====================================================
-// PREPARAR LOS 10 RANKINGS
+// GENERAR RANKINGS EN SEGUNDO PLANO
 // =====================================================
 
-app.post(
-    "/api/preparar-rankings",
-    async (req, res) => {
+async function generarRankingsEnSegundoPlano() {
 
-        try {
+    if (
+        generandoRankings
+    ) {
 
-            if (
-                !GEMINI_API_KEY
-            ) {
+        return;
 
-                return res
-                    .status(500)
-                    .json({
-
-                        error:
-                            "La variable GEMINI_API_KEY no está configurada en Render."
-
-                    });
-
-            }
+    }
 
 
-            console.log(
-                "🏆 TEOS AI está preparando los 10 rankings..."
-            );
+    generandoRankings =
+        true;
 
 
-            const listaTemas =
-                temasRankings
-                    .map(
-                        tema =>
-                            `${tema.numero}. ${tema.titulo}`
-                    )
-                    .join("\n");
+    estadoRankings = {
+
+        estado:
+            "generando",
+
+        rankings:
+            null,
+
+        error:
+            null,
+
+        iniciado:
+            new Date().toISOString(),
+
+        terminado:
+            null
+
+    };
 
 
-            const prompt = `
+    try {
+
+        console.log(
+            "🏆 TEOS AI está preparando los 10 rankings..."
+        );
+
+
+        const listaTemas =
+            temasRankings
+                .map(
+                    tema =>
+                        `${tema.numero}. ${tema.titulo}`
+                )
+                .join("\n");
+
+
+        const prompt = `
 
 Eres el editor principal de TEOS Gaming,
 un medio digital especializado en videojuegos.
@@ -1831,8 +1634,6 @@ un medio digital especializado en videojuegos.
 Debes actualizar los 10 rankings de TEOS Gaming.
 
 Estos rankings YA EXISTEN.
-
-NO debes crear nuevos rankings.
 
 Debes mantener EXACTAMENTE estos 10 temas:
 
@@ -1907,199 +1708,276 @@ No agregues explicaciones fuera del JSON.
 `;
 
 
-            const texto =
-                await generarConGemini(
-                    prompt
-                );
+        const texto =
+            await generarConGemini(
+                prompt
+            );
 
 
-            let datos;
+        let datos;
 
 
-            try {
+        try {
 
-                datos =
-                    JSON.parse(
-                        texto
-                    );
-
-            } catch (error) {
-
-                console.error(
-                    "❌ JSON recibido de Gemini:"
-                );
-
-                console.error(
+            datos =
+                JSON.parse(
                     texto
                 );
 
-                throw new Error(
-                    "Gemini no devolvió un JSON válido."
-                );
+        } catch (error) {
 
-            }
+            throw new Error(
+                "Gemini no devolvió un JSON válido para los rankings."
+            );
+
+        }
+
+
+        if (
+            !datos.rankings ||
+            !Array.isArray(
+                datos.rankings
+            )
+        ) {
+
+            throw new Error(
+                "La respuesta no contiene los rankings."
+            );
+
+        }
+
+
+        if (
+            datos.rankings.length !== 10
+        ) {
+
+            throw new Error(
+                "Gemini no generó exactamente 10 rankings."
+            );
+
+        }
+
+
+        for (
+            let i = 0;
+            i < datos.rankings.length;
+            i++
+        ) {
+
+            const ranking =
+                datos.rankings[i];
+
+
+            ranking.numero =
+                i + 1;
+
+
+            ranking.titulo =
+                temasRankings[i].titulo;
 
 
             if (
-                !datos.rankings ||
+                !ranking.juegos ||
                 !Array.isArray(
-                    datos.rankings
+                    ranking.juegos
                 )
             ) {
 
                 throw new Error(
-                    "La respuesta no contiene los rankings."
+                    "El ranking " +
+                    (i + 1) +
+                    " no contiene juegos."
                 );
 
             }
 
 
             if (
-                datos.rankings.length !== 10
+                ranking.juegos.length !== 10
             ) {
 
                 throw new Error(
-                    "Gemini no generó exactamente 10 rankings."
+                    "El ranking " +
+                    (i + 1) +
+                    " no contiene exactamente 10 juegos."
                 );
 
             }
 
 
             for (
-                let i = 0;
-                i < datos.rankings.length;
-                i++
+                let j = 0;
+                j < ranking.juegos.length;
+                j++
             ) {
 
-                const ranking =
-                    datos.rankings[i];
+                const juego =
+                    ranking.juegos[j];
 
 
-                ranking.numero =
-                    i + 1;
-
-
-                ranking.titulo =
-                    temasRankings[i].titulo;
+                juego.puesto =
+                    j + 1;
 
 
                 if (
-                    !ranking.juegos ||
-                    !Array.isArray(
-                        ranking.juegos
-                    )
+                    !juego.nombre ||
+                    !juego.puntuacion ||
+                    !juego.descripcion
                 ) {
 
                     throw new Error(
                         "El ranking " +
                         (i + 1) +
-                        " no contiene juegos."
+                        " contiene un juego incompleto."
                     );
-
-                }
-
-
-                if (
-                    ranking.juegos.length !== 10
-                ) {
-
-                    throw new Error(
-                        "El ranking " +
-                        (i + 1) +
-                        " no contiene exactamente 10 juegos."
-                    );
-
-                }
-
-
-                for (
-                    let j = 0;
-                    j < ranking.juegos.length;
-                    j++
-                ) {
-
-                    const juego =
-                        ranking.juegos[j];
-
-
-                    juego.puesto =
-                        j + 1;
-
-
-                    if (
-                        !juego.nombre
-                    ) {
-
-                        throw new Error(
-                            "Falta el nombre de un juego en el ranking " +
-                            (i + 1)
-                        );
-
-                    }
-
-
-                    if (
-                        !juego.puntuacion
-                    ) {
-
-                        throw new Error(
-                            "Falta la puntuación de un juego en el ranking " +
-                            (i + 1)
-                        );
-
-                    }
-
-
-                    if (
-                        !juego.descripcion
-                    ) {
-
-                        throw new Error(
-                            "Falta la descripción de un juego en el ranking " +
-                            (i + 1)
-                        );
-
-                    }
 
                 }
 
             }
 
-
-            console.log(
-                "✅ Los 10 rankings fueron preparados correctamente."
-            );
+        }
 
 
-            res.json({
+        estadoRankings = {
+
+            estado:
+                "completado",
+
+            rankings:
+                datos.rankings,
+
+            error:
+                null,
+
+            iniciado:
+                estadoRankings.iniciado,
+
+            terminado:
+                new Date().toISOString()
+
+        };
+
+
+        console.log(
+            "✅ Los 10 rankings fueron preparados correctamente."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Error preparando rankings:",
+            error
+        );
+
+
+        estadoRankings = {
+
+            estado:
+                "error",
+
+            rankings:
+                null,
+
+            error:
+                error.message ||
+                "No se pudieron preparar los rankings.",
+
+            iniciado:
+                estadoRankings.iniciado,
+
+            terminado:
+                new Date().toISOString()
+
+        };
+
+    } finally {
+
+        generandoRankings =
+            false;
+
+    }
+
+}
+
+
+// =====================================================
+// INICIAR PREPARACIÓN DE RANKINGS
+// =====================================================
+
+app.post(
+    "/api/preparar-rankings",
+    function(req, res) {
+
+        if (
+            generandoRankings
+        ) {
+
+            return res.json({
 
                 ok:
                     true,
 
-                rankings:
-                    datos.rankings
+                estado:
+                    "generando",
 
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "❌ Error preparando rankings:",
-                error
-            );
-
-            res.status(
-                500
-            ).json({
-
-                error:
-                    error.message ||
-                    "No se pudieron preparar los rankings."
+                mensaje:
+                    "TEOS AI ya está preparando los rankings."
 
             });
 
         }
+
+
+        generarRankingsEnSegundoPlano();
+
+
+        res.json({
+
+            ok:
+                true,
+
+            estado:
+                "iniciando",
+
+            mensaje:
+                "🏆 TEOS AI comenzó a preparar los 10 rankings."
+
+        });
+
+    }
+);
+
+
+// =====================================================
+// CONSULTAR ESTADO DE RANKINGS
+// =====================================================
+
+app.get(
+    "/api/estado-rankings",
+    function(req, res) {
+
+        res.json({
+
+            ok:
+                true,
+
+            estado:
+                estadoRankings.estado,
+
+            rankings:
+                estadoRankings.rankings,
+
+            error:
+                estadoRankings.error,
+
+            iniciado:
+                estadoRankings.iniciado,
+
+            terminado:
+                estadoRankings.terminado
+
+        });
 
     }
 );
@@ -2117,7 +1995,10 @@ function escaparHTMLRanking(
         return "";
     }
 
-    return String(texto)
+
+    return String(
+        texto
+    )
         .replace(
             /&/g,
             "&amp;"
@@ -2143,7 +2024,7 @@ function escaparHTMLRanking(
 
 
 // =====================================================
-// CREAR CONTENIDO DEL RANKING
+// CREAR CONTENIDO RANKING
 // =====================================================
 
 function crearContenidoRanking(
@@ -2184,7 +2065,6 @@ function crearContenidoRanking(
                     "🥇";
 
             }
-
             else if (
                 juego.puesto === 2
             ) {
@@ -2193,7 +2073,6 @@ function crearContenidoRanking(
                     "🥈";
 
             }
-
             else if (
                 juego.puesto === 3
             ) {
@@ -2209,11 +2088,8 @@ function crearContenidoRanking(
                 <h2>
 
                     ${emoji}
-
                     #${juego.puesto}
-
                     —
-
                     ${escaparHTMLRanking(
                         juego.nombre
                     )}
@@ -2223,13 +2099,10 @@ function crearContenidoRanking(
                 <p>
 
                     <strong>
-
                         ⭐
-
                         ${escaparHTMLRanking(
                             juego.puntuacion
                         )}
-
                     </strong>
 
                 </p>
@@ -2350,8 +2223,7 @@ function actualizarArchivoRanking(
 
         throw new Error(
             "No se encontró correctamente el contenedor ranking-contenido en " +
-            nombreArchivo +
-            "."
+            nombreArchivo
         );
 
     }
@@ -2400,9 +2272,7 @@ function actualizarArchivoRanking(
     html =
         html.replace(
             /<h1>[\s\S]*?<\/h1>/i,
-            `<h1>
-    ${tituloNuevo}
-</h1>`
+            `<h1>${tituloNuevo}</h1>`
         );
 
 
@@ -2425,9 +2295,9 @@ function actualizarArchivoRanking(
         html.replace(
             /<p\s+class=["']ranking-fecha["'][^>]*>[\s\S]*?<\/p>/i,
             `<p class="ranking-fecha">
-    📅 ${fechaActual}
-    · Por TEOS Gaming
-</p>`
+                📅 ${fechaActual}
+                · Por TEOS Gaming
+            </p>`
         );
 
 
@@ -2451,12 +2321,12 @@ function actualizarArchivoRanking(
 
 
 // =====================================================
-// PUBLICAR LOS 10 RANKINGS
+// PUBLICAR RANKINGS
 // =====================================================
 
 app.post(
     "/api/publicar-rankings",
-    (req, res) => {
+    function(req, res) {
 
         try {
 
@@ -2498,7 +2368,7 @@ app.post(
             }
 
 
-            const archivosActualizados =
+            const archivos =
                 [];
 
 
@@ -2512,10 +2382,6 @@ app.post(
                     rankings[i];
 
 
-                const numero =
-                    i + 1;
-
-
                 if (
                     !ranking ||
                     !Array.isArray(
@@ -2526,7 +2392,9 @@ app.post(
 
                     throw new Error(
                         "El ranking " +
-                        numero +
+                        (
+                            i + 1
+                        ) +
                         " no es válido."
                     );
 
@@ -2534,30 +2402,21 @@ app.post(
 
 
                 ranking.numero =
-                    numero;
+                    i + 1;
 
 
                 ranking.titulo =
                     temasRankings[i].titulo;
 
 
-                const archivo =
+                archivos.push(
                     actualizarArchivoRanking(
-                        numero,
+                        i + 1,
                         ranking
-                    );
-
-
-                archivosActualizados.push(
-                    archivo
+                    )
                 );
 
             }
-
-
-            console.log(
-                "🚀 LOS 10 RANKINGS FUERON ACTUALIZADOS."
-            );
 
 
             res.json({
@@ -2568,8 +2427,7 @@ app.post(
                 mensaje:
                     "🚀 Los 10 rankings fueron actualizados correctamente.",
 
-                archivos:
-                    archivosActualizados
+                archivos
 
             });
 
@@ -2577,7 +2435,7 @@ app.post(
         } catch (error) {
 
             console.error(
-                "❌ Error actualizando rankings:",
+                "❌ Error publicando rankings:",
                 error
             );
 
@@ -2588,7 +2446,7 @@ app.post(
 
                 error:
                     error.message ||
-                    "No se pudieron actualizar los rankings."
+                    "No se pudieron publicar los rankings."
 
             });
 
@@ -2604,7 +2462,7 @@ app.post(
 
 app.get(
     "/api/estado",
-    (req, res) => {
+    function(req, res) {
 
         res.json({
 
@@ -2626,7 +2484,10 @@ app.get(
                 ),
 
             rankings:
-                10
+                10,
+
+            estadoRankings:
+                estadoRankings.estado
 
         });
 
@@ -2635,12 +2496,12 @@ app.get(
 
 
 // =====================================================
-// RUTA DE PRUEBA DE GEMINI
+// PRUEBA DE GEMINI
 // =====================================================
 
 app.get(
     "/api/prueba-gemini",
-    async (req, res) => {
+    async function(req, res) {
 
         try {
 
@@ -2714,24 +2575,20 @@ app.listen(
         console.log(
             "======================================"
         );
-
         console.log(
             "🌐 Puerto:",
             PORT
         );
-
-        console.log(
-            "📡 API:",
-            `/api/estado`
-        );
-
         console.log(
             "🤖 Gemini:",
             GEMINI_API_KEY
                 ? "CONFIGURADO"
                 : "NO CONFIGURADO"
         );
-
+        console.log(
+            "🏆 Rankings:",
+            "SISTEMA EN SEGUNDO PLANO"
+        );
         console.log(
             "======================================"
         );
