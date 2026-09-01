@@ -1,69 +1,121 @@
+// =====================================================
+// TEOS GAMING - SISTEMA DE NOTICIAS
+// NOTICIAS FIJAS + NOTICIAS PUBLICADAS POR TEOS AI
+// =====================================================
+
+
+// =====================================================
+// NOTICIAS BASE
+// =====================================================
+
 const noticias = [
 
     {
         id: 1,
-        titulo: "Xbox Game Pass suma nuevos juegos en la segunda mitad de agosto",
-        categoria: "Noticias",
-        tipo: "noticia",
-        fecha: "18 de agosto de 2026",
-        descripcion: "Xbox anuncia una nueva tanda de juegos que llegará a Game Pass durante la segunda mitad de agosto de 2026.",
-        imagen: "https://images.unsplash.com/photo-1605901309584-818e25960a8f?auto=format&fit=crop&w=1000&q=80",
-        url: "noticias/noticia1.html"
+        titulo:
+            "Xbox Game Pass suma nuevos juegos en la segunda mitad de agosto",
+        categoria:
+            "Noticias",
+        tipo:
+            "noticia",
+        fecha:
+            "18 de agosto de 2026",
+        descripcion:
+            "Xbox anuncia una nueva tanda de juegos que llegará a Game Pass durante la segunda mitad de agosto de 2026.",
+        imagen:
+            "https://images.unsplash.com/photo-1605901309584-818e25960a8f?auto=format&fit=crop&w=1000&q=80",
+        url:
+            "noticias/noticia1.html"
     },
 
     {
         id: 2,
-        titulo: "Call of Duty: Modern Warfare 4 prepara su beta con nuevos detalles",
-        categoria: "Noticias",
-        tipo: "noticia",
-        fecha: "19 de agosto de 2026",
-        descripcion: "Call of Duty revela nuevos detalles de la beta de Modern Warfare 4, incluyendo fechas, requisitos de PC y contenido.",
-        imagen: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80",
-        url: "noticias/noticia2.html"
+        titulo:
+            "Call of Duty: Modern Warfare 4 prepara su beta con nuevos detalles",
+        categoria:
+            "Noticias",
+        tipo:
+            "noticia",
+        fecha:
+            "19 de agosto de 2026",
+        descripcion:
+            "Call of Duty revela nuevos detalles de la beta de Modern Warfare 4, incluyendo fechas, requisitos de PC y contenido.",
+        imagen:
+            "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80",
+        url:
+            "noticias/noticia2.html"
     },
 
     {
         id: 3,
-        titulo: "Xbox Game Pass recibe nuevos juegos durante la segunda mitad de agosto",
-        categoria: "Noticias",
-        tipo: "noticia",
-        fecha: "19 de agosto de 2026",
-        descripcion: "Xbox Game Pass suma nuevos juegos durante la segunda mitad de agosto, incluyendo Vapor World: Over the Mind, BlazBlue Entropy Effect X y Relooted.",
-        imagen: "https://images.unsplash.com/photo-1605901309584-818e25960a8f?auto=format&fit=crop&w=1000&q=80",
-        url: "noticias/noticia3.html"
+        titulo:
+            "Xbox Game Pass recibe nuevos juegos durante la segunda mitad de agosto",
+        categoria:
+            "Noticias",
+        tipo:
+            "noticia",
+        fecha:
+            "19 de agosto de 2026",
+        descripcion:
+            "Xbox Game Pass suma nuevos juegos durante la segunda mitad de agosto, incluyendo Vapor World: Over the Mind, BlazBlue Entropy Effect X y Relooted.",
+        imagen:
+            "https://images.unsplash.com/photo-1605901309584-818e25960a8f?auto=format&fit=crop&w=1000&q=80",
+        url:
+            "noticias/noticia3.html"
     },
 
     {
         id: 4,
-        titulo: "Gallipoli prepara su lanzamiento para PC, PS5 y Xbox",
-        categoria: "Lanzamientos",
-        tipo: "lanzamiento",
-        fecha: "19 de agosto de 2026",
-        descripcion: "Gallipoli llegará el 20 de agosto a PC, PlayStation 5 y Xbox Series X|S con una propuesta de shooter multijugador ambientada en la histórica campaña de Gallípoli.",
-        imagen: "imagenes/gallipoli.jpg",
-        url: "noticias/noticia4.html"
+        titulo:
+            "Gallipoli prepara su lanzamiento para PC, PS5 y Xbox",
+        categoria:
+            "Lanzamientos",
+        tipo:
+            "lanzamiento",
+        fecha:
+            "19 de agosto de 2026",
+        descripcion:
+            "Gallipoli llegará el 20 de agosto a PC, PlayStation 5 y Xbox Series X|S con una propuesta de shooter multijugador ambientada en la histórica campaña de Gallípoli.",
+        imagen:
+            "imagenes/gallipoli.jpg",
+        url:
+            "noticias/noticia4.html"
     },
 
     {
         id: 5,
-        titulo: "Gran Turismo 7 prepara la actualización 1.71 con cuatro nuevos coches",
-        categoria: "Noticias",
-        tipo: "noticia",
-        fecha: "19 de agosto de 2026",
-        descripcion: "Gran Turismo 7 recibirá la actualización 1.71 el 20 de agosto con cuatro nuevos coches, tres eventos de carrera y una nueva ubicación para Scapes.",
-        imagen: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1000&q=80",
-        url: "noticias/noticia5.html"
+        titulo:
+            "Gran Turismo 7 prepara la actualización 1.71 con cuatro nuevos coches",
+        categoria:
+            "Noticias",
+        tipo:
+            "noticia",
+        fecha:
+            "19 de agosto de 2026",
+        descripcion:
+            "Gran Turismo 7 recibirá la actualización 1.71 el 20 de agosto con cuatro nuevos coches, tres eventos de carrera y una nueva ubicación para Scapes.",
+        imagen:
+            "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1000&q=80",
+        url:
+            "noticias/noticia5.html"
     },
 
     {
         id: 6,
-        titulo: "Cómo mejorar el rendimiento de tu PC para conseguir más FPS",
-        categoria: "Guías",
-        tipo: "guia",
-        fecha: "19 de agosto de 2026",
-        descripcion: "Consejos prácticos para mejorar el rendimiento de tu PC y conseguir una experiencia de juego más fluida.",
-        imagen: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1000&q=80",
-        url: "noticias/guia1.html"
+        titulo:
+            "Cómo mejorar el rendimiento de tu PC para conseguir más FPS",
+        categoria:
+            "Guías",
+        tipo:
+            "guia",
+        fecha:
+            "19 de agosto de 2026",
+        descripcion:
+            "Consejos prácticos para mejorar el rendimiento de tu PC y conseguir una experiencia de juego más fluida.",
+        imagen:
+            "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1000&q=80",
+        url:
+            "noticias/guia1.html"
     }
 
 ];
@@ -73,10 +125,17 @@ const noticias = [
 // NORMALIZAR TÍTULOS
 // =====================================================
 
-function normalizarTitulo(titulo) {
+function normalizarTitulo(
+    titulo
+) {
 
-    return String(titulo || "")
-        .replace(/\s+/g, " ")
+    return String(
+        titulo || ""
+    )
+        .replace(
+            /\s+/g,
+            " "
+        )
         .trim()
         .toLowerCase();
 
@@ -87,15 +146,27 @@ function normalizarTitulo(titulo) {
 // CONVERTIR FECHAS
 // =====================================================
 
-function convertirFecha(fecha) {
+function convertirFecha(
+    fecha
+) {
 
     if (!fecha) {
         return 0;
     }
 
-    let texto = String(fecha)
-        .replace(/📅/g, "")
-        .replace(/·\s*Por.*$/i, "")
+
+    let texto =
+        String(
+            fecha
+        )
+        .replace(
+            /📅/g,
+            ""
+        )
+        .replace(
+            /·\s*Por.*$/i,
+            ""
+        )
         .trim();
 
 
@@ -107,6 +178,7 @@ function convertirFecha(fecha) {
         texto.match(
             /(\d{1,2})\/(\d{1,2})\/(\d{4})/
         );
+
 
     if (formatoCorto) {
 
@@ -201,13 +273,13 @@ function convertirFecha(fecha) {
 
 
     // =================================================
-    // FORMATO RSS
-    // Ejemplo:
-    // Wed, 19 Aug 2026 20:47:20 +0000
+    // FORMATO RSS / ISO
     // =================================================
 
     const fechaRSS =
-        new Date(texto);
+        new Date(
+            texto
+        );
 
 
     if (
@@ -234,7 +306,10 @@ function convertirFecha(fecha) {
 function ordenarNoticias() {
 
     noticias.sort(
-        function(a, b) {
+        function(
+            a,
+            b
+        ) {
 
             const fechaA =
                 convertirFecha(
@@ -246,10 +321,89 @@ function ordenarNoticias() {
                     b.fecha
                 );
 
-            return fechaB - fechaA;
+            return (
+                fechaB -
+                fechaA
+            );
 
         }
     );
+
+}
+
+
+// =====================================================
+// ESCAPAR HTML
+// =====================================================
+
+function escaparHTML(
+    texto
+) {
+
+    if (!texto) {
+        return "";
+    }
+
+
+    return String(
+        texto
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// =====================================================
+// ESCAPAR ATRIBUTOS HTML
+// =====================================================
+
+function escaparAtributo(
+    texto
+) {
+
+    if (!texto) {
+        return "#";
+    }
+
+
+    return String(
+        texto
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        );
 
 }
 
@@ -262,15 +416,28 @@ async function cargarNoticiasPublicadas() {
 
     try {
 
-        const respuesta = await fetch(
-            "http://localhost:3000/api/noticias-publicadas"
-        );
+        // =================================================
+        // IMPORTANTE:
+        // YA NO SE USA localhost:3000
+        // Render atiende esta misma ruta.
+        // =================================================
+
+        const respuesta =
+            await fetch(
+                "/api/noticias-publicadas",
+                {
+                    method:
+                        "GET",
+                    cache:
+                        "no-store"
+                }
+            );
 
 
         if (!respuesta.ok) {
 
             throw new Error(
-                "No se pudieron cargar las noticias."
+                "No se pudieron cargar las noticias publicadas."
             );
 
         }
@@ -280,7 +447,11 @@ async function cargarNoticiasPublicadas() {
             await respuesta.json();
 
 
-        if (!Array.isArray(noticiasPublicadas)) {
+        if (
+            !Array.isArray(
+                noticiasPublicadas
+            )
+        ) {
 
             console.error(
                 "La respuesta del servidor no es una lista."
@@ -296,7 +467,10 @@ async function cargarNoticiasPublicadas() {
 
 
         noticiasPublicadas.forEach(
-            function(noticia, indice) {
+            function(
+                noticia,
+                indice
+            ) {
 
                 const tituloPublicada =
                     normalizarTitulo(
@@ -304,7 +478,9 @@ async function cargarNoticiasPublicadas() {
                     );
 
 
-                if (!tituloPublicada) {
+                if (
+                    !tituloPublicada
+                ) {
 
                     return;
 
@@ -313,21 +489,59 @@ async function cargarNoticiasPublicadas() {
 
                 const yaExiste =
                     noticias.some(
-                        function(noticiaExistente) {
+                        function(
+                            noticiaExistente
+                        ) {
 
                             return (
                                 normalizarTitulo(
                                     noticiaExistente.titulo
-                                ) === tituloPublicada
+                                ) ===
+                                tituloPublicada
                             );
 
                         }
                     );
 
 
-                if (yaExiste) {
+                if (
+                    yaExiste
+                ) {
 
                     return;
+
+                }
+
+
+                // =================================================
+                // CREAR URL PÚBLICA
+                // =================================================
+
+                let urlPublica =
+                    "";
+
+
+                if (
+                    noticia.archivo
+                ) {
+
+                    urlPublica =
+                        "noticias/" +
+                        noticia.archivo;
+
+                }
+                else if (
+                    noticia.enlace
+                ) {
+
+                    urlPublica =
+                        noticia.enlace;
+
+                }
+                else {
+
+                    urlPublica =
+                        "noticias/";
 
                 }
 
@@ -335,7 +549,11 @@ async function cargarNoticiasPublicadas() {
                 noticias.push({
 
                     id:
-                        "ai-" + indice,
+                        "ai-" +
+                        (
+                            noticia.archivo ||
+                            indice
+                        ),
 
                     titulo:
                         noticia.titulo ||
@@ -352,14 +570,15 @@ async function cargarNoticiasPublicadas() {
                         "Fecha no disponible",
 
                     descripcion:
-                        "Nueva noticia publicada automáticamente por TEOS Gaming.",
+                        noticia.descripcion ||
+                        "Nueva noticia publicada por TEOS Gaming.",
 
                     imagen:
                         noticia.imagen ||
                         "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1000&q=80",
 
                     url:
-                        noticia.enlace
+                        urlPublica
 
                 });
 
@@ -367,12 +586,7 @@ async function cargarNoticiasPublicadas() {
         );
 
 
-        // =================================================
-        // ORDENAR TODAS LAS NOTICIAS
-        // =================================================
-
         ordenarNoticias();
-
 
         teosMostrarNoticias();
 
@@ -380,7 +594,7 @@ async function cargarNoticiasPublicadas() {
     } catch (error) {
 
         console.error(
-            "No se pudieron cargar las noticias automáticas:",
+            "❌ No se pudieron cargar las noticias automáticas:",
             error
         );
 
@@ -419,10 +633,6 @@ function teosMostrarNoticias(
     }
 
 
-    // =================================================
-    // ORDENAR ANTES DE MOSTRAR
-    // =================================================
-
     ordenarNoticias();
 
 
@@ -437,11 +647,14 @@ function teosMostrarNoticias(
         noticiasMostrar =
             noticias;
 
-    } else {
+    }
+    else {
 
         noticiasMostrar =
             noticias.filter(
-                function(noticia) {
+                function(
+                    noticia
+                ) {
 
                     return (
                         noticia.categoria ===
@@ -454,19 +667,34 @@ function teosMostrarNoticias(
     }
 
 
-    // =================================================
-    // LIMPIAR CONTENEDOR
-    // =================================================
-
-    contenedor.innerHTML = "";
+    contenedor.innerHTML =
+        "";
 
 
-    // =================================================
-    // CREAR TARJETAS
-    // =================================================
+    if (
+        noticiasMostrar.length === 0
+    ) {
+
+        contenedor.innerHTML =
+            `
+            <div class="ai-error">
+
+                <p>
+                    ⚠️ No hay noticias disponibles en esta categoría.
+                </p>
+
+            </div>
+            `;
+
+        return;
+
+    }
+
 
     noticiasMostrar.forEach(
-        function(noticia) {
+        function(
+            noticia
+        ) {
 
             const tarjeta =
                 document.createElement(
@@ -478,13 +706,18 @@ function teosMostrarNoticias(
                 "tarjeta-noticia";
 
 
-            tarjeta.innerHTML = `
+            tarjeta.innerHTML =
+                `
 
                 <div class="imagen-noticia">
 
                     <img
-                        src="${noticia.imagen}"
-                        alt="${noticia.titulo}"
+                        src="${escaparAtributo(
+                            noticia.imagen
+                        )}"
+                        alt="${escaparAtributo(
+                            noticia.titulo
+                        )}"
                         loading="lazy"
                     >
 
@@ -494,27 +727,38 @@ function teosMostrarNoticias(
                 <div class="contenido-noticia">
 
                     <span class="etiqueta">
-                        ${noticia.categoria}
+                        ${escaparHTML(
+                            noticia.categoria
+                        )}
                     </span>
 
 
                     <h2>
-                        ${noticia.titulo}
+                        ${escaparHTML(
+                            noticia.titulo
+                        )}
                     </h2>
 
 
                     <p class="fecha-noticia">
-                        📅 ${noticia.fecha}
+                        📅
+                        ${escaparHTML(
+                            noticia.fecha
+                        )}
                     </p>
 
 
                     <p>
-                        ${noticia.descripcion}
+                        ${escaparHTML(
+                            noticia.descripcion
+                        )}
                     </p>
 
 
                     <a
-                        href="${noticia.url}"
+                        href="${escaparAtributo(
+                            noticia.url
+                        )}"
                         class="boton-leer"
                     >
                         Leer más →
@@ -522,7 +766,7 @@ function teosMostrarNoticias(
 
                 </div>
 
-            `;
+                `;
 
 
             contenedor.appendChild(
@@ -548,14 +792,18 @@ function configurarFiltros() {
 
 
     filtros.forEach(
-        function(filtro) {
+        function(
+            filtro
+        ) {
 
             filtro.addEventListener(
                 "click",
                 function() {
 
                     filtros.forEach(
-                        function(item) {
+                        function(
+                            item
+                        ) {
 
                             item.classList.remove(
                                 "activo"
@@ -589,7 +837,7 @@ function configurarFiltros() {
 
 
 // =====================================================
-// INICIAR
+// INICIAR NOTICIAS
 // =====================================================
 
 document.addEventListener(
