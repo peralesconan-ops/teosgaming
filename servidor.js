@@ -81,48 +81,145 @@ async function generarConGemini(prompt) {
 
     }
 
-    const respuesta =
-        await ai.models.generateContent({
 
-            model:
-                "gemini-3.7-flash",
+    const modelos = [
 
-            contents:
-                prompt,
+        "gemini-3.7-flash",
+        "gemini-3.6-flash",
+        "gemini-3.5-flash"
 
-            config: {
-                responseMimeType:
-                    "application/json"
+    ];
+
+
+    let ultimoError = null;
+
+
+    for (
+        const modelo of modelos
+    ) {
+
+        try {
+
+            console.log(
+                "🤖 Intentando Gemini:",
+                modelo
+            );
+
+
+            const respuesta =
+                await ai.models.generateContent({
+
+                    model:
+                        modelo,
+
+                    contents:
+                        prompt,
+
+                    config: {
+
+                        responseMimeType:
+                            "application/json"
+
+                    }
+
+                });
+
+
+            const texto =
+                respuesta.text;
+
+
+            if (!texto) {
+
+                throw new Error(
+                    "Gemini no devolvió contenido."
+                );
+
             }
 
-        });
 
-    const texto =
-        respuesta.text;
+            console.log(
+                "✅ Gemini respondió usando:",
+                modelo
+            );
 
-    if (!texto) {
 
-        throw new Error(
-            "Gemini no devolvió contenido."
-        );
+            return texto
+                .trim()
+                .replace(
+                    /^```json/i,
+                    ""
+                )
+                .replace(
+                    /^```/i,
+                    ""
+                )
+                .replace(
+                    /```$/i,
+                    ""
+                )
+                .trim();
+
+
+        } catch (error) {
+
+            ultimoError =
+                error;
+
+
+            const mensaje =
+                String(
+                    error.message ||
+                    error
+                );
+
+
+            console.error(
+                "❌ Error con",
+                modelo,
+                ":",
+                mensaje
+            );
+
+
+            // Si el modelo está saturado,
+            // probar el siguiente modelo.
+            if (
+                mensaje.includes("503") ||
+                mensaje.includes("UNAVAILABLE") ||
+                mensaje.includes("high demand") ||
+                mensaje.includes("overloaded")
+            ) {
+
+                console.log(
+                    "🔄 Modelo saturado. Probando siguiente modelo..."
+                );
+
+                continue;
+
+            }
+
+
+            // Para errores de autenticación,
+            // permisos, clave, etc., no tiene
+            // sentido probar otros modelos.
+            throw error;
+
+        }
 
     }
 
-    return texto
-        .trim()
-        .replace(
-            /^```json/i,
-            ""
+
+    throw new Error(
+        "Gemini no está disponible en este momento. " +
+        "Los modelos configurados devolvieron error. " +
+        "Último error: " +
+        (
+            ultimoError?.message ||
+            "Error desconocido."
         )
-        .replace(
-            /^```/i,
-            ""
-        )
-        .replace(
-            /```$/i,
-            ""
-        )
-        .trim();
+    );
+
 }
 
 
