@@ -84,88 +84,152 @@ let generandoRankings =
 
 async function generarConGemini(prompt) {
 
-    if (
-        !GEMINI_API_KEY ||
-        !ai
-    ) {
-
+    if (!GEMINI_API_KEY || !ai) {
         throw new Error(
             "La variable GEMINI_API_KEY no está configurada."
         );
-
     }
 
+    const modelos = [
+        "gemini-3.6-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash"
+    ];
 
-    console.log(
-        "🤖 Intentando Gemini: gemini-3.6-flash"
-    );
+    const maxIntentosPorModelo = 3;
 
+    let ultimoError = null;
 
-    try {
+    for (const modelo of modelos) {
 
-        const respuesta =
-            await ai.models.generateContent({
+        for (
+            let intento = 1;
+            intento <= maxIntentosPorModelo;
+            intento++
+        ) {
 
-                model:
-                    "gemini-3.6-flash",
+            try {
 
-                contents:
-                    prompt,
+                console.log(
+                    `🤖 Gemini: ${modelo} | intento ${intento}/${maxIntentosPorModelo}`
+                );
 
-                config: {
-                    responseMimeType:
-                        "application/json"
+                const respuesta =
+                    await ai.models.generateContent({
+
+                        model: modelo,
+
+                        contents: prompt,
+
+                        config: {
+                            responseMimeType:
+                                "application/json"
+                        }
+
+                    });
+
+                const texto =
+                    respuesta.text;
+
+                if (!texto) {
+
+                    throw new Error(
+                        "Gemini no devolvió contenido."
+                    );
+
                 }
 
-            });
+                console.log(
+                    `✅ Gemini respondió usando: ${modelo}`
+                );
 
+                return texto
+                    .trim()
+                    .replace(
+                        /^```json/i,
+                        ""
+                    )
+                    .replace(
+                        /^```/i,
+                        ""
+                    )
+                    .replace(
+                        /```$/i,
+                        ""
+                    )
+                    .trim();
 
-        const texto =
-            respuesta.text;
+            } catch (error) {
 
+                ultimoError = error;
 
-        if (!texto) {
+                const mensaje =
+                    String(
+                        error.message ||
+                        error
+                    );
 
-            throw new Error(
-                "Gemini no devolvió contenido."
-            );
+                const es503 =
+                    mensaje.includes("503") ||
+                    mensaje.includes("UNAVAILABLE") ||
+                    mensaje.includes("high demand") ||
+                    mensaje.includes("overloaded");
+
+                console.error(
+                    `❌ Error con ${modelo} | intento ${intento}:`,
+                    mensaje
+                );
+
+                if (!es503) {
+                    throw error;
+                }
+
+                if (
+                    intento <
+                    maxIntentosPorModelo
+                ) {
+
+                    // Espera progresiva:
+                    // 5s, 10s
+                    const espera =
+                        intento === 1
+                            ? 5000
+                            : 10000;
+
+                    console.log(
+                        `⏳ Esperando ${espera / 1000}s antes de reintentar...`
+                    );
+
+                    await new Promise(
+                        function(resolve) {
+                            setTimeout(
+                                resolve,
+                                espera
+                            );
+                        }
+                    );
+
+                } else {
+
+                    console.log(
+                        `🔄 ${modelo} sigue no disponible. Cambiando al siguiente modelo...`
+                    );
+
+                }
+
+            }
 
         }
 
-
-        console.log(
-            "✅ Gemini respondió usando: gemini-3.6-flash"
-        );
-
-
-        return texto
-            .trim()
-            .replace(
-                /^```json/i,
-                ""
-            )
-            .replace(
-                /^```/i,
-                ""
-            )
-            .replace(
-                /```$/i,
-                ""
-            )
-            .trim();
-
-    } catch (error) {
-
-        console.error(
-            "❌ Error con gemini-3.6-flash:",
-            error.message ||
-            error
-        );
-
-        throw error;
-
     }
 
+    throw new Error(
+        "Gemini no pudo completar la solicitud después de probar los modelos disponibles. Último error: " +
+        (
+            ultimoError?.message ||
+            "Error desconocido."
+        )
+    );
 }
 
 
