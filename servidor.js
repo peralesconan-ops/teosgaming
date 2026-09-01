@@ -2161,6 +2161,50 @@ Devuelve ÚNICAMENTE JSON válido.
 
 }
 
+// =====================================================
+// INICIAR PREPARACIÓN DE RANKINGS
+// =====================================================
+
+app.post(
+    "/api/preparar-rankings",
+    function(req, res) {
+
+        if (generandoRankings) {
+
+            return res.json({
+
+                ok:
+                    true,
+
+                estado:
+                    "generando",
+
+                mensaje:
+                    "TEOS AI ya está preparando los rankings."
+
+            });
+
+        }
+
+
+        generarRankingsEnSegundoPlano();
+
+
+        res.json({
+
+            ok:
+                true,
+
+            estado:
+                "iniciando",
+
+            mensaje:
+                "🏆 TEOS AI comenzó a preparar los 10 rankings."
+
+        });
+
+    }
+);
 
 // =====================================================
 // CONSULTAR ESTADO DE RANKINGS
