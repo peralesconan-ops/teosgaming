@@ -1577,38 +1577,19 @@ const temasRankings = [
 
 async function generarRankingsEnSegundoPlano() {
 
-    if (
-        generandoRankings
-    ) {
-
+    if (generandoRankings) {
         return;
-
     }
 
-
-    generandoRankings =
-        true;
-
+    generandoRankings = true;
 
     estadoRankings = {
-
-        estado:
-            "generando",
-
-        rankings:
-            null,
-
-        error:
-            null,
-
-        iniciado:
-            new Date().toISOString(),
-
-        terminado:
-            null
-
+        estado: "generando",
+        rankings: null,
+        error: null,
+        iniciado: new Date().toISOString(),
+        terminado: null
     };
-
 
     try {
 
@@ -1616,14 +1597,100 @@ async function generarRankingsEnSegundoPlano() {
             "🏆 TEOS AI está preparando los 10 rankings..."
         );
 
+        const criteriosRankings = [
+
+            {
+                numero: 1,
+                titulo:
+                    "Top 10 mejores videojuegos de aventura",
+                criterio:
+                    "SOLO videojuegos cuyo enfoque principal sea la aventura, exploración y experiencia narrativa. No incluir deportes, carreras ni shooters competitivos como categoría principal."
+            },
+
+            {
+                numero: 2,
+                titulo:
+                    "Top 10 mejores juegos RPG",
+                criterio:
+                    "SOLO videojuegos RPG o con elementos RPG claramente centrales. No incluir juegos puramente deportivos, carreras o shooters competitivos sin componentes RPG relevantes."
+            },
+
+            {
+                numero: 3,
+                titulo:
+                    "Top 10 mejores juegos para jugar con amigos",
+                criterio:
+                    "SOLO videojuegos especialmente adecuados para jugar con amigos mediante cooperativo, multijugador local, multijugador online o experiencias sociales. No seleccionar simplemente juegos populares sin una buena razón para jugar con amigos."
+            },
+
+            {
+                numero: 4,
+                titulo:
+                    "Top 10 mejores juegos gratuitos para PC",
+                criterio:
+                    "SOLO videojuegos gratuitos para PC. No incluir juegos de pago. Deben poder jugarse gratuitamente en PC como producto principal."
+            },
+
+            {
+                numero: 5,
+                titulo:
+                    "Top 10 mejores juegos de acción",
+                criterio:
+                    "SOLO videojuegos donde la acción sea uno de sus elementos principales. Se permiten subgéneros de acción, pero deben tener combate o acción como componente central."
+            },
+
+            {
+                numero: 6,
+                titulo:
+                    "Top 10 mejores juegos de mundo abierto",
+                criterio:
+                    "SOLO videojuegos con mundo abierto o grandes entornos abiertos donde el jugador pueda explorar libremente. No incluir juegos lineales como categoría principal."
+            },
+
+            {
+                numero: 7,
+                titulo:
+                    "Top 10 mejores juegos multijugador",
+                criterio:
+                    "SOLO videojuegos cuyo multijugador sea una característica importante y real del juego. No incluir juegos exclusivamente para un jugador."
+            },
+
+            {
+                numero: 8,
+                titulo:
+                    "Top 10 mejores juegos de terror",
+                criterio:
+                    "SOLO videojuegos de terror, horror, survival horror o experiencias claramente centradas en provocar miedo, tensión o terror. PROHIBIDO incluir juegos de deportes, carreras, estrategia o shooters competitivos que no sean de terror. Counter-Strike 2, Valorant, FIFA, EA Sports FC y juegos similares NO pertenecen a esta categoría."
+            },
+
+            {
+                numero: 9,
+                titulo:
+                    "Top 10 mejores juegos de supervivencia",
+                criterio:
+                    "SOLO videojuegos de supervivencia donde sobrevivir, gestionar recursos, construir, explorar o resistir amenazas sea una parte central de la experiencia."
+            },
+
+            {
+                numero: 10,
+                titulo:
+                    "Top 10 mejores juegos para PC",
+                criterio:
+                    "SOLO videojuegos relevantes para jugar en PC. Prioriza juegos destacados de PC y no mezcles categorías sin relación editorial. Deben ser videojuegos reales y reconocidos."
+            }
+
+        ];
+
 
         const listaTemas =
-            temasRankings
+            criteriosRankings
                 .map(
-                    tema =>
-                        `${tema.numero}. ${tema.titulo}`
+                    ranking =>
+                        `${ranking.numero}. ${ranking.titulo}
+CRITERIO:
+${ranking.criterio}`
                 )
-                .join("\n");
+                .join("\n\n");
 
 
         const prompt = `
@@ -1631,44 +1698,77 @@ async function generarRankingsEnSegundoPlano() {
 Eres el editor principal de TEOS Gaming,
 un medio digital especializado en videojuegos.
 
-Debes actualizar los 10 rankings de TEOS Gaming.
+Debes crear y actualizar EXACTAMENTE 10 rankings.
 
-Estos rankings YA EXISTEN.
+MUY IMPORTANTE:
 
-Debes mantener EXACTAMENTE estos 10 temas:
+Cada ranking tiene una categoría diferente.
+
+NO debes intercambiar juegos entre categorías.
+
+NO debes colocar un juego solamente porque sea famoso.
+
+Cada juego debe pertenecer CLARAMENTE a la categoría del ranking
+en el que aparece.
+
+Si un juego no cumple claramente la categoría,
+NO lo incluyas.
+
+Estos son los 10 rankings:
 
 ${listaTemas}
 
-REGLAS IMPORTANTES:
+REGLAS GENERALES:
 
 - Debes devolver exactamente 10 rankings.
-- Cada ranking corresponde a su número.
-- Cada ranking debe tener exactamente 10 videojuegos.
-- Los puestos deben ser del 1 al 10.
-- Cada juego debe tener una puntuación sobre 10.
-- Las puntuaciones deben ser coherentes.
-- No repitas innecesariamente el mismo juego dentro del mismo ranking.
-- Puedes utilizar juegos conocidos y relevantes.
-- El ranking debe tener sentido editorialmente.
-- Escribe todo en español.
-- Mantén un tono profesional de medio gaming.
-- No menciones que eres una IA.
-- No inventes declaraciones de desarrolladores.
+- Los números deben ser del 1 al 10.
+- Cada ranking debe tener exactamente 10 juegos.
+- Cada ranking debe tener puestos del 1 al 10.
+- No repitas innecesariamente juegos dentro del mismo ranking.
+- Todos los videojuegos deben existir realmente.
+- No inventes videojuegos.
+- No inventes estudios.
+- No inventes desarrolladores.
 - No inventes fechas.
-- No inventes cifras concretas.
-- No agregues características específicas dudosas.
-- No agregues un ranking número 11.
-- No agregues categorías nuevas.
+- No inventes declaraciones.
+- Escribe todo en español.
+- Utiliza un tono editorial profesional.
+- Las puntuaciones deben ser sobre 10.
+- La descripción de cada juego debe explicar por qué encaja en esa categoría.
+- Si tienes dudas sobre si un videojuego pertenece a una categoría, NO lo uses.
 
-Para cada ranking debes generar:
+REGLA CRÍTICA DE CATEGORÍAS:
 
-- título
-- introducción
-- exactamente 10 juegos
-- puntuación de cada juego
-- descripción de cada juego
-- explicación de cómo se elaboró
-- conclusión
+Un juego puede ser popular y aun así estar PROHIBIDO si no pertenece a la categoría.
+
+Ejemplo:
+
+"Top 10 mejores juegos de terror"
+
+NO puede contener:
+- Counter-Strike 2
+- Valorant
+- FIFA
+- EA Sports FC
+- Rocket League
+- Gran Turismo
+- Call of Duty por el simple hecho de ser un shooter
+- cualquier juego que no sea claramente de terror
+
+Para "juegos de terror", selecciona exclusivamente
+juegos de horror, survival horror o terror claramente reconocibles.
+
+Para "RPG", selecciona exclusivamente RPG o juegos
+con componentes RPG centrales.
+
+Para "mundo abierto", selecciona exclusivamente
+juegos con mundo abierto o grandes entornos abiertos.
+
+Para "supervivencia", selecciona exclusivamente
+juegos donde la supervivencia sea una mecánica central.
+
+Para "gratuitos para PC", selecciona exclusivamente
+juegos que puedan jugarse gratuitamente en PC.
 
 FORMATO OBLIGATORIO:
 
@@ -1683,7 +1783,7 @@ FORMATO OBLIGATORIO:
                     "puesto": 1,
                     "nombre": "Nombre del videojuego",
                     "puntuacion": "9.8/10",
-                    "descripcion": "Descripción del videojuego"
+                    "descripcion": "Explicación breve de por qué este juego pertenece a esta categoría"
                 }
             ],
             "comoSeElaboro": "Explicación del criterio utilizado",
@@ -1692,19 +1792,13 @@ FORMATO OBLIGATORIO:
     ]
 }
 
-Debe haber EXACTAMENTE 10 objetos dentro de "rankings".
+Debe haber EXACTAMENTE 10 objetos en "rankings".
 
-Cada objeto debe tener EXACTAMENTE 10 juegos.
+Cada ranking debe tener EXACTAMENTE 10 juegos.
 
-Los números de los rankings deben ser del 1 al 10.
-
-Los puestos de cada ranking deben ser del 1 al 10.
-
-Devuelve ÚNICAMENTE JSON válido.
-
+No agregues información fuera del JSON.
 No agregues Markdown.
 No agregues bloques de código.
-No agregues explicaciones fuera del JSON.
 `;
 
 
@@ -1758,6 +1852,10 @@ No agregues explicaciones fuera del JSON.
         }
 
 
+        // =================================================
+        // VALIDACIÓN DE ESTRUCTURA
+        // =================================================
+
         for (
             let i = 0;
             i < datos.rankings.length;
@@ -1773,7 +1871,7 @@ No agregues explicaciones fuera del JSON.
 
 
             ranking.titulo =
-                temasRankings[i].titulo;
+                criteriosRankings[i].titulo;
 
 
             if (
@@ -1805,6 +1903,10 @@ No agregues explicaciones fuera del JSON.
             }
 
 
+            // =================================================
+            // VALIDAR LOS 10 PUESTOS
+            // =================================================
+
             for (
                 let j = 0;
                 j < ranking.juegos.length;
@@ -1820,16 +1922,184 @@ No agregues explicaciones fuera del JSON.
 
 
                 if (
-                    !juego.nombre ||
-                    !juego.puntuacion ||
+                    !juego.nombre
+                ) {
+
+                    throw new Error(
+                        "Falta el nombre del juego " +
+                        (j + 1) +
+                        " del ranking " +
+                        (i + 1)
+                    );
+
+                }
+
+
+                if (
+                    !juego.puntuacion
+                ) {
+
+                    throw new Error(
+                        "Falta la puntuación del juego " +
+                        juego.nombre
+                    );
+
+                }
+
+
+                if (
                     !juego.descripcion
                 ) {
 
                     throw new Error(
-                        "El ranking " +
-                        (i + 1) +
-                        " contiene un juego incompleto."
+                        "Falta la descripción del juego " +
+                        juego.nombre
                     );
+
+                }
+
+            }
+
+        }
+
+
+        // =================================================
+        // VALIDACIONES ESPECIALES
+        // =================================================
+
+        const prohibidosTerror = [
+
+            "counter-strike",
+            "counter strike",
+            "valorant",
+            "fifa",
+            "ea sports fc",
+            "rocket league",
+            "gran turismo",
+            "football manager",
+            "nba 2k",
+            "madden",
+
+        ];
+
+
+        const rankingTerror =
+            datos.rankings[7];
+
+
+        if (
+            rankingTerror &&
+            Array.isArray(
+                rankingTerror.juegos
+            )
+        ) {
+
+            for (
+                const juego
+                of rankingTerror.juegos
+            ) {
+
+                const nombre =
+                    String(
+                        juego.nombre ||
+                        ""
+                    )
+                    .toLowerCase()
+                    .trim();
+
+
+                for (
+                    const prohibido
+                    of prohibidosTerror
+                ) {
+
+                    if (
+                        nombre.includes(
+                            prohibido
+                        )
+                    ) {
+
+                        throw new Error(
+                            "El ranking de terror contiene un juego incompatible con la categoría: " +
+                            juego.nombre
+                        );
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        // =================================================
+        // VALIDAR RANKING GRATUITOS PARA PC
+        // =================================================
+
+        const rankingGratis =
+            datos.rankings[3];
+
+
+        if (
+            rankingGratis &&
+            Array.isArray(
+                rankingGratis.juegos
+            )
+        ) {
+
+            const nombresGratis =
+                rankingGratis.juegos
+                    .map(
+                        juego =>
+                            String(
+                                juego.nombre ||
+                                ""
+                            )
+                            .toLowerCase()
+                    );
+
+
+            // Evitar títulos claramente conocidos
+            // por ser juegos de pago en su versión principal.
+            const claramentePagos = [
+
+                "elden ring",
+                "red dead redemption 2",
+                "grand theft auto v",
+                "the witcher 3",
+                "cyberpunk 2077",
+                "baldur's gate 3",
+                "baldurs gate 3",
+                "hogwarts legacy",
+                "resident evil 4",
+                "black myth wukong"
+
+            ];
+
+
+            for (
+                const nombre
+                of nombresGratis
+            ) {
+
+                for (
+                    const pago
+                    of claramentePagos
+                ) {
+
+                    if (
+                        nombre.includes(
+                            pago
+                        )
+                    ) {
+
+                        throw new Error(
+                            "El ranking de juegos gratuitos para PC contiene un título que no cumple la categoría: " +
+                            nombre
+                        );
+
+                    }
 
                 }
 
@@ -1859,7 +2129,7 @@ No agregues explicaciones fuera del JSON.
 
 
         console.log(
-            "✅ Los 10 rankings fueron preparados correctamente."
+            "✅ Los 10 rankings fueron preparados y validados correctamente."
         );
 
 
