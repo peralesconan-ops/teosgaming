@@ -1,6 +1,6 @@
 // =====================================================
 // TEOS AI - PANEL PRINCIPAL
-// NOTICIAS + RANKINGS
+// NOTICIAS + RANKINGS + PC
 // =====================================================
 
 
@@ -38,34 +38,25 @@ if (botonSeccionNoticias) {
         function () {
 
             if (seccionNoticias) {
-                seccionNoticias.style.display =
-                    "block";
+                seccionNoticias.style.display = "block";
             }
 
             if (seccionRankings) {
-                seccionRankings.style.display =
-                    "none";
+                seccionRankings.style.display = "none";
             }
 
             if (seccionPC) {
-                seccionPC.style.display =
-                    "none";
+                seccionPC.style.display = "none";
             }
 
-            botonSeccionNoticias.classList.add(
-                "activo"
-            );
+            botonSeccionNoticias.classList.add("activo");
 
             if (botonSeccionRankings) {
-                botonSeccionRankings.classList.remove(
-                    "activo"
-                );
+                botonSeccionRankings.classList.remove("activo");
             }
 
             if (botonSeccionPC) {
-                botonSeccionPC.classList.remove(
-                    "activo"
-                );
+                botonSeccionPC.classList.remove("activo");
             }
 
         }
@@ -85,34 +76,25 @@ if (botonSeccionRankings) {
         function () {
 
             if (seccionNoticias) {
-                seccionNoticias.style.display =
-                    "none";
+                seccionNoticias.style.display = "none";
             }
 
             if (seccionRankings) {
-                seccionRankings.style.display =
-                    "block";
+                seccionRankings.style.display = "block";
             }
 
             if (seccionPC) {
-                seccionPC.style.display =
-                    "none";
+                seccionPC.style.display = "none";
             }
 
-            botonSeccionRankings.classList.add(
-                "activo"
-            );
+            botonSeccionRankings.classList.add("activo");
 
             if (botonSeccionNoticias) {
-                botonSeccionNoticias.classList.remove(
-                    "activo"
-                );
+                botonSeccionNoticias.classList.remove("activo");
             }
 
             if (botonSeccionPC) {
-                botonSeccionPC.classList.remove(
-                    "activo"
-                );
+                botonSeccionPC.classList.remove("activo");
             }
 
         }
@@ -132,34 +114,25 @@ if (botonSeccionPC) {
         function () {
 
             if (seccionNoticias) {
-                seccionNoticias.style.display =
-                    "none";
+                seccionNoticias.style.display = "none";
             }
 
             if (seccionRankings) {
-                seccionRankings.style.display =
-                    "none";
+                seccionRankings.style.display = "none";
             }
 
             if (seccionPC) {
-                seccionPC.style.display =
-                    "block";
+                seccionPC.style.display = "block";
             }
 
-            botonSeccionPC.classList.add(
-                "activo"
-            );
+            botonSeccionPC.classList.add("activo");
 
             if (botonSeccionNoticias) {
-                botonSeccionNoticias.classList.remove(
-                    "activo"
-                );
+                botonSeccionNoticias.classList.remove("activo");
             }
 
             if (botonSeccionRankings) {
-                botonSeccionRankings.classList.remove(
-                    "activo"
-                );
+                botonSeccionRankings.classList.remove("activo");
             }
 
         }
@@ -173,20 +146,13 @@ if (botonSeccionPC) {
 // =====================================================
 
 const campoConsulta =
-    document.getElementById(
-        "consultaNoticias"
-    );
+    document.getElementById("consultaNoticias");
 
 const botonBuscar =
-    document.getElementById(
-        "buscarNoticias"
-    );
+    document.getElementById("buscarNoticias");
 
 const resultado =
-    document.getElementById(
-        "resultadoNoticias"
-    );
-
+    document.getElementById("resultadoNoticias");
 
 let noticiasEncontradas = [];
 
@@ -248,8 +214,7 @@ async function buscarNoticias() {
 
     if (resultado) {
 
-        resultado.innerHTML =
-            `
+        resultado.innerHTML = `
             <div class="ai-cargando">
 
                 <strong>
@@ -261,18 +226,12 @@ async function buscarNoticias() {
                 </p>
 
             </div>
-            `;
+        `;
 
     }
 
 
     try {
-
-        // =================================================
-        // IMPORTANTE:
-        // SE USA EL MISMO DOMINIO.
-        // NO SE USA localhost.
-        // =================================================
 
         const respuesta =
             await fetch(
@@ -302,9 +261,7 @@ async function buscarNoticias() {
         }
 
 
-        if (
-            !Array.isArray(datos)
-        ) {
+        if (!Array.isArray(datos)) {
 
             throw new Error(
                 "El servidor no devolvió una lista válida de noticias."
@@ -366,8 +323,7 @@ function mostrarErrorNoticias(
     }
 
 
-    resultado.innerHTML =
-        `
+    resultado.innerHTML = `
         <div class="ai-error">
 
             <strong>
@@ -381,13 +337,13 @@ function mostrarErrorNoticias(
             </p>
 
         </div>
-        `;
+    `;
 
 }
 
 
 // =====================================================
-// LEER RESPUESTA JSON
+// LEER JSON DEL SERVIDOR
 // =====================================================
 
 async function leerRespuestaJSON(
@@ -432,8 +388,7 @@ function obtenerMensajeError(
 
     if (
         datos &&
-        typeof datos.error ===
-        "string"
+        typeof datos.error === "string"
     ) {
 
         return datos.error;
@@ -444,8 +399,7 @@ function obtenerMensajeError(
     if (
         datos &&
         datos.error &&
-        typeof datos.error.message ===
-        "string"
+        typeof datos.error.message === "string"
     ) {
 
         return datos.error.message;
@@ -472,10 +426,6 @@ function mostrarNoticias(
 
 
     let html =
-        "";
-
-
-    html +=
         `
         <div class="lista-noticias-ai">
 
@@ -496,8 +446,7 @@ function mostrarNoticias(
             indice
         ) {
 
-            html +=
-                `
+            html += `
                 <article class="noticia-ai">
 
                     <label>
@@ -593,8 +542,7 @@ function mostrarNoticias(
     );
 
 
-    html +=
-        `
+    html += `
             <button
                 id="prepararArticulo"
                 class="boton-preparar"
@@ -663,11 +611,16 @@ function formatearFecha(
     return fechaConvertida.toLocaleString(
         "es-ES",
         {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
+            day:
+                "2-digit",
+            month:
+                "2-digit",
+            year:
+                "numeric",
+            hour:
+                "2-digit",
+            minute:
+                "2-digit"
         }
     );
 
@@ -687,7 +640,9 @@ function escaparHTML(
     }
 
 
-    return String(texto)
+    return String(
+        texto
+    )
         .replace(
             /&/g,
             "&amp;"
@@ -725,7 +680,9 @@ function escaparAtributo(
     }
 
 
-    return String(texto)
+    return String(
+        texto
+    )
         .replace(
             /&/g,
             "&amp;"
@@ -812,8 +769,7 @@ async function prepararArticulo() {
 
     if (resultado) {
 
-        resultado.innerHTML =
-            `
+        resultado.innerHTML = `
             <div class="ai-cargando">
 
                 <strong>
@@ -829,7 +785,7 @@ async function prepararArticulo() {
                 </p>
 
             </div>
-            `;
+        `;
 
     }
 
@@ -878,9 +834,13 @@ async function prepararArticulo() {
         }
 
 
+        articuloGenerado =
+            datos;
+
+
         if (
-            !datos ||
-            typeof datos !==
+            !articuloGenerado ||
+            typeof articuloGenerado !==
             "object"
         ) {
 
@@ -891,12 +851,8 @@ async function prepararArticulo() {
         }
 
 
-        articuloGenerado =
-            datos;
-
-
         mostrarArticuloGenerado(
-            datos
+            articuloGenerado
         );
 
 
@@ -910,8 +866,7 @@ async function prepararArticulo() {
 
         if (resultado) {
 
-            resultado.innerHTML =
-                `
+            resultado.innerHTML = `
                 <div class="ai-error">
 
                     <strong>
@@ -926,7 +881,7 @@ async function prepararArticulo() {
                     </p>
 
                 </div>
-                `;
+            `;
 
         }
 
@@ -936,7 +891,7 @@ async function prepararArticulo() {
 
 
 // =====================================================
-// MOSTRAR ARTÍCULO GENERADO
+// MOSTRAR ARTÍCULO
 // =====================================================
 
 function mostrarArticuloGenerado(
@@ -948,9 +903,7 @@ function mostrarArticuloGenerado(
     }
 
 
-    resultado.innerHTML =
-        `
-
+    resultado.innerHTML = `
         <div class="vista-previa-articulo">
 
             <span class="etiqueta">
@@ -1073,8 +1026,7 @@ function mostrarArticuloGenerado(
             </div>
 
         </div>
-
-        `;
+    `;
 
 
     const botonVolver =
@@ -1134,9 +1086,7 @@ async function publicarArticulo() {
     }
 
 
-    if (
-        !articuloGenerado
-    ) {
+    if (!articuloGenerado) {
 
         alert(
             "No hay un artículo preparado para publicar."
@@ -1149,7 +1099,6 @@ async function publicarArticulo() {
 
     boton.disabled =
         true;
-
 
     boton.textContent =
         "⏳ Publicando...";
@@ -1201,8 +1150,7 @@ async function publicarArticulo() {
 
         if (resultado) {
 
-            resultado.innerHTML =
-                `
+            resultado.innerHTML = `
 
                 <div class="ai-exito">
 
@@ -1260,7 +1208,7 @@ async function publicarArticulo() {
 
                 </div>
 
-                `;
+            `;
 
         }
 
@@ -1298,7 +1246,6 @@ async function publicarArticulo() {
         boton.disabled =
             false;
 
-
         boton.textContent =
             "🚀 Publicar";
 
@@ -1329,7 +1276,6 @@ const resultadoRankings =
     document.getElementById(
         "resultadoRankings"
     );
-
 
 let rankingsGenerados =
     null;
@@ -1368,7 +1314,7 @@ async function prepararRankings() {
             true;
 
         botonPrepararRankings.textContent =
-            "⏳ TEOS AI está preparando los rankings...";
+            "⏳ Iniciando TEOS AI...";
 
     }
 
@@ -1383,11 +1329,11 @@ async function prepararRankings() {
             </strong>
 
             <p>
-                🏆 Analizando los 10 rankings...
+                🏆 Iniciando la actualización de los 10 rankings...
             </p>
 
             <p>
-                Esto puede tardar unos segundos.
+                No cierres esta página.
             </p>
 
         </div>
@@ -1397,7 +1343,11 @@ async function prepararRankings() {
 
     try {
 
-        const respuesta =
+        // =================================================
+        // INICIAR PROCESO
+        // =================================================
+
+        const respuestaInicio =
             await fetch(
                 "/api/preparar-rankings",
                 {
@@ -1406,16 +1356,125 @@ async function prepararRankings() {
                         "POST",
 
                     headers: {
-
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
                         JSON.stringify({})
                 }
             );
+
+
+        const datosInicio =
+            await leerRespuestaJSON(
+                respuestaInicio
+            );
+
+
+        if (
+            !respuestaInicio.ok
+        ) {
+
+            throw new Error(
+                obtenerMensajeError(
+                    datosInicio,
+                    "No se pudo iniciar la preparación de rankings."
+                )
+            );
+
+        }
+
+
+        // =================================================
+        // COMENZAR A CONSULTAR EL ESTADO
+        // =================================================
+
+        await esperarRankings();
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Error iniciando rankings:",
+            error
+        );
+
+
+        mostrarErrorRankings(
+            error.message ||
+            "No se pudieron preparar los rankings."
+        );
+
+
+        if (botonPrepararRankings) {
+
+            botonPrepararRankings.disabled =
+                false;
+
+            botonPrepararRankings.textContent =
+                "🤖 Preparar los 10 rankings";
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// ESPERAR ESTADO DE RANKINGS
+// =====================================================
+
+async function esperarRankings() {
+
+    const maximoIntentos =
+        180;
+
+    const intervalo =
+        3000;
+
+
+    for (
+        let intento = 0;
+        intento < maximoIntentos;
+        intento++
+    ) {
+
+        await esperar(
+            intervalo
+        );
+
+
+        let respuesta;
+
+
+        try {
+
+            respuesta =
+                await fetch(
+                    "/api/estado-rankings",
+                    {
+                        method:
+                            "GET",
+                        cache:
+                            "no-store"
+                    }
+                );
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error consultando estado:",
+                error
+            );
+
+
+            throw new Error(
+                "Se perdió la conexión con TEOS AI mientras se preparaban los rankings."
+            );
+
+        }
 
 
         const datos =
@@ -1429,88 +1488,224 @@ async function prepararRankings() {
             throw new Error(
                 obtenerMensajeError(
                     datos,
-                    "No se pudieron preparar los rankings."
+                    "No se pudo consultar el estado de los rankings."
                 )
             );
 
         }
 
 
+        // =================================================
+        // GENERANDO
+        // =================================================
+
         if (
-            !datos ||
-            !Array.isArray(
-                datos.rankings
-            )
+            datos.estado ===
+            "generando"
+        ) {
+
+            if (
+                resultadoRankings
+            ) {
+
+                resultadoRankings.innerHTML =
+                    `
+
+                    <div class="ai-cargando">
+
+                        <strong>
+                            🤖 TEOS AI
+                        </strong>
+
+                        <p>
+                            🏆 Generando los 10 rankings...
+                        </p>
+
+                        <p>
+                            Gemini está preparando el contenido.
+                        </p>
+
+                        <p>
+                            ⏳ Intento ${
+                                intento + 1
+                            } de ${
+                                maximoIntentos
+                            }
+                        </p>
+
+                    </div>
+
+                    `;
+
+            }
+
+            continue;
+
+        }
+
+
+        // =================================================
+        // COMPLETADO
+        // =================================================
+
+        if (
+            datos.estado ===
+            "completado"
+        ) {
+
+            if (
+                !datos.rankings ||
+                !Array.isArray(
+                    datos.rankings
+                )
+            ) {
+
+                throw new Error(
+                    "TEOS AI terminó la generación, pero no devolvió los rankings."
+                );
+
+            }
+
+
+            if (
+                datos.rankings.length !== 10
+            ) {
+
+                throw new Error(
+                    "TEOS AI no devolvió exactamente 10 rankings."
+                );
+
+            }
+
+
+            rankingsGenerados =
+                datos.rankings;
+
+
+            mostrarRankings(
+                rankingsGenerados
+            );
+
+
+            return;
+
+        }
+
+
+        // =================================================
+        // ERROR
+        // =================================================
+
+        if (
+            datos.estado ===
+            "error"
         ) {
 
             throw new Error(
-                "El servidor no devolvió los rankings correctamente."
+                datos.error ||
+                "TEOS AI no pudo preparar los rankings."
             );
 
         }
 
 
+        // =================================================
+        // INICIANDO
+        // =================================================
+
         if (
-            datos.rankings.length !== 10
+            datos.estado ===
+            "idle"
         ) {
 
-            throw new Error(
-                "TEOS AI no devolvió exactamente 10 rankings."
-            );
+            if (
+                resultadoRankings
+            ) {
 
-        }
+                resultadoRankings.innerHTML =
+                    `
 
+                    <div class="ai-cargando">
 
-        rankingsGenerados =
-            datos.rankings;
+                        <strong>
+                            🤖 TEOS AI
+                        </strong>
 
+                        <p>
+                            🏆 Preparando el proceso...
+                        </p>
 
-        mostrarRankings(
-            rankingsGenerados
-        );
+                    </div>
 
+                    `;
 
-    } catch (error) {
-
-        console.error(
-            "❌ Error preparando rankings:",
-            error
-        );
-
-
-        resultadoRankings.innerHTML =
-            `
-
-            <div class="ai-error">
-
-                <strong>
-                    ❌ No se pudieron preparar los rankings.
-                </strong>
-
-                <p>
-                    ${escaparHTML(
-                        error.message ||
-                        "Error preparando rankings."
-                    )}
-                </p>
-
-            </div>
-
-            `;
-
-    } finally {
-
-        if (botonPrepararRankings) {
-
-            botonPrepararRankings.disabled =
-                false;
-
-            botonPrepararRankings.textContent =
-                "🤖 Preparar los 10 rankings";
+            }
 
         }
 
     }
+
+
+    throw new Error(
+        "TEOS AI tardó demasiado en preparar los rankings."
+    );
+
+}
+
+
+// =====================================================
+// ESPERAR
+// =====================================================
+
+function esperar(
+    milisegundos
+) {
+
+    return new Promise(
+        function(resolve) {
+
+            setTimeout(
+                resolve,
+                milisegundos
+            );
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// ERROR DE RANKINGS
+// =====================================================
+
+function mostrarErrorRankings(
+    mensaje
+) {
+
+    if (!resultadoRankings) {
+        return;
+    }
+
+
+    resultadoRankings.innerHTML =
+        `
+
+        <div class="ai-error">
+
+            <strong>
+                ❌ No se pudieron preparar los rankings.
+            </strong>
+
+            <p>
+                ${escaparHTML(
+                    mensaje
+                )}
+            </p>
+
+        </div>
+
+        `;
 
 }
 
@@ -1794,6 +1989,19 @@ function mostrarRankings(
 
     }
 
+
+    if (
+        botonPrepararRankings
+    ) {
+
+        botonPrepararRankings.disabled =
+            false;
+
+        botonPrepararRankings.textContent =
+            "🤖 Preparar los 10 rankings";
+
+    }
+
 }
 
 
@@ -1987,7 +2195,9 @@ async function publicarRankings() {
             );
 
 
-        if (botonVolver) {
+        if (
+            botonVolver
+        ) {
 
             botonVolver.addEventListener(
                 "click",
