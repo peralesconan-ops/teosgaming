@@ -39,10 +39,11 @@ if (botonSeccionNoticias) {
                 seccionRankings.style.display = "none";
             }
 
-
             botonSeccionNoticias.classList.add("activo");
 
-            botonSeccionRankings.classList.remove("activo");
+            if (botonSeccionRankings) {
+                botonSeccionRankings.classList.remove("activo");
+            }
 
         }
     );
@@ -68,10 +69,11 @@ if (botonSeccionRankings) {
                 seccionRankings.style.display = "block";
             }
 
-
             botonSeccionRankings.classList.add("activo");
 
-            botonSeccionNoticias.classList.remove("activo");
+            if (botonSeccionNoticias) {
+                botonSeccionNoticias.classList.remove("activo");
+            }
 
         }
     );
@@ -92,7 +94,6 @@ const botonBuscar =
 const resultado =
     document.getElementById("resultadoNoticias");
 
-
 let noticiasEncontradas = [];
 
 let articuloGenerado = null;
@@ -111,7 +112,6 @@ if (botonBuscar) {
 
 }
 
-
 if (campoConsulta) {
 
     campoConsulta.addEventListener(
@@ -119,9 +119,7 @@ if (campoConsulta) {
         function (event) {
 
             if (event.key === "Enter") {
-
                 buscarNoticias();
-
             }
 
         }
@@ -137,78 +135,126 @@ if (campoConsulta) {
 async function buscarNoticias() {
 
     const consulta =
-        campoConsulta.value.trim();
-
+        campoConsulta
+            ? campoConsulta.value.trim()
+            : "";
 
     if (consulta === "") {
 
-        resultado.innerHTML =
-            "<div class='ai-error'>" +
-            "⚠️ Escribe qué noticias quieres buscar." +
-            "</div>";
+        if (resultado) {
+
+            resultado.innerHTML =
+                "<div class='ai-error'>" +
+                "⚠️ Escribe qué noticias quieres buscar." +
+                "</div>";
+
+        }
 
         return;
 
     }
 
+    if (resultado) {
 
-    resultado.innerHTML =
-        "<div class='ai-cargando'>" +
-        "<strong>🤖 TEOS AI</strong>" +
-        "<p>🔎 Buscando noticias de hoy...</p>" +
-        "</div>";
+        resultado.innerHTML =
+            "<div class='ai-cargando'>" +
+            "<strong>🤖 TEOS AI</strong>" +
+            "<p>🔎 Buscando noticias de hoy...</p>" +
+            "</div>";
 
+    }
 
     try {
 
         const respuesta =
             await fetch(
-                "http://localhost:3000/api/noticias"
+                "/api/noticias"
             );
-
 
         if (!respuesta.ok) {
 
+            let mensaje =
+                "Error del servidor.";
+
+            try {
+
+                const errorData =
+                    await respuesta.json();
+
+                if (errorData.error) {
+                    mensaje =
+                        errorData.error;
+                }
+
+            } catch (error) {
+                console.error(
+                    "No se pudo leer el error del servidor:",
+                    error
+                );
+            }
+
             throw new Error(
-                "Error del servidor"
+                mensaje
             );
 
         }
 
-
         const noticias =
             await respuesta.json();
 
+        if (!Array.isArray(noticias)) {
+
+            throw new Error(
+                "El servidor no devolvió una lista válida de noticias."
+            );
+
+        }
 
         noticiasEncontradas =
             noticias;
 
-
         if (noticias.length === 0) {
 
-            resultado.innerHTML =
-                "<div class='ai-error'>" +
-                "⚠️ No encontramos noticias de hoy." +
-                "</div>";
+            if (resultado) {
+
+                resultado.innerHTML =
+                    "<div class='ai-error'>" +
+                    "⚠️ No encontramos noticias de hoy." +
+                    "</div>";
+
+            }
 
             return;
 
         }
 
-
-        mostrarNoticias(noticias);
-
+        mostrarNoticias(
+            noticias
+        );
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "❌ Error buscando noticias:",
+            error
+        );
 
+        if (resultado) {
 
-        resultado.innerHTML =
-            "<div class='ai-error'>" +
-            "<strong>❌ No se pudo conectar con TEOS AI.</strong>" +
-            "<p>Comprueba que servidor.js esté funcionando.</p>" +
-            "</div>";
+            resultado.innerHTML =
+                "<div class='ai-error'>" +
+                "<strong>" +
+                "❌ No se pudo conectar con TEOS AI." +
+                "</strong>" +
+                "<p>" +
+                escaparHTML(
+                    error.message ||
+                    "Error de conexión."
+                ) +
+                "</p>" +
+                "</div>";
+
+        }
 
     }
 
@@ -219,18 +265,22 @@ async function buscarNoticias() {
 // MOSTRAR NOTICIAS
 // =====================================================
 
-function mostrarNoticias(noticias) {
+function mostrarNoticias(
+    noticias
+) {
 
-    let html = "";
+    if (!resultado) {
+        return;
+    }
 
+    let html =
+        "";
 
     html +=
         "<div class='lista-noticias-ai'>";
 
-
     html +=
         "<h2>📰 Noticias de hoy</h2>";
-
 
     html +=
         "<p>" +
@@ -238,17 +288,17 @@ function mostrarNoticias(noticias) {
         "para TEOS Gaming." +
         "</p>";
 
-
     noticias.forEach(
-        function (noticia, indice) {
+        function (
+            noticia,
+            indice
+        ) {
 
             html +=
                 "<article class='noticia-ai'>";
 
-
             html +=
                 "<label>";
-
 
             html +=
                 "<input type='checkbox' " +
@@ -257,24 +307,24 @@ function mostrarNoticias(noticias) {
                 indice +
                 "'>";
 
-
             html +=
                 "<strong>" +
-                escaparHTML(noticia.titulo) +
+                escaparHTML(
+                    noticia.titulo ||
+                    "Sin título"
+                ) +
                 "</strong>";
-
 
             html +=
                 "</label>";
 
-
             html +=
                 "<p>" +
                 escaparHTML(
-                    noticia.descripcion || ""
+                    noticia.descripcion ||
+                    ""
                 ) +
                 "</p>";
-
 
             html +=
                 "<small>📰 " +
@@ -284,10 +334,8 @@ function mostrarNoticias(noticias) {
                 ) +
                 "</small>";
 
-
             html +=
                 "<br>";
-
 
             html +=
                 "<small>📅 " +
@@ -297,10 +345,8 @@ function mostrarNoticias(noticias) {
                 ) +
                 "</small>";
 
-
             html +=
                 "<br><br>";
-
 
             html +=
                 "<a href='" +
@@ -312,13 +358,11 @@ function mostrarNoticias(noticias) {
                 "Leer fuente →" +
                 "</a>";
 
-
             html +=
                 "</article>";
 
         }
     );
-
 
     html +=
         "<button id='prepararArticulo' " +
@@ -326,20 +370,16 @@ function mostrarNoticias(noticias) {
         "🤖 Preparar artículo TEOS" +
         "</button>";
 
-
     html +=
         "</div>";
 
-
     resultado.innerHTML =
         html;
-
 
     const botonPreparar =
         document.getElementById(
             "prepararArticulo"
         );
-
 
     if (botonPreparar) {
 
@@ -357,21 +397,35 @@ function mostrarNoticias(noticias) {
 // ESCAPAR HTML
 // =====================================================
 
-function escaparHTML(texto) {
+function escaparHTML(
+    texto
+) {
 
     if (!texto) {
-
         return "";
-
     }
 
-
     return String(texto)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -380,20 +434,31 @@ function escaparHTML(texto) {
 // ESCAPAR ATRIBUTOS
 // =====================================================
 
-function escaparAtributo(texto) {
+function escaparAtributo(
+    texto
+) {
 
     if (!texto) {
-
         return "#";
-
     }
 
-
     return String(texto)
-        .replace(/&/g, "&amp;")
-        .replace(/"/g, "&quot;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        );
 
 }
 
@@ -404,37 +469,46 @@ function escaparAtributo(texto) {
 
 async function prepararArticulo() {
 
-    const seleccionadas = [];
-
+    const seleccionadas =
+        [];
 
     const casillas =
         document.querySelectorAll(
             ".seleccionar-noticia"
         );
 
-
     casillas.forEach(
-        function (casilla) {
+        function (
+            casilla
+        ) {
 
-            if (casilla.checked) {
+            if (
+                casilla.checked
+            ) {
 
                 const indice =
                     Number(
                         casilla.dataset.indice
                     );
 
-
-                seleccionadas.push(
+                if (
                     noticiasEncontradas[indice]
-                );
+                ) {
+
+                    seleccionadas.push(
+                        noticiasEncontradas[indice]
+                    );
+
+                }
 
             }
 
         }
     );
 
-
-    if (seleccionadas.length === 0) {
+    if (
+        seleccionadas.length === 0
+    ) {
 
         alert(
             "Selecciona al menos una noticia."
@@ -444,44 +518,41 @@ async function prepararArticulo() {
 
     }
 
-
     const noticia =
         seleccionadas[0];
 
+    if (resultado) {
 
-    resultado.innerHTML =
-        "<div class='ai-cargando'>" +
-        "<strong>🤖 TEOS AI</strong>" +
-        "<p>📝 Preparando el artículo...</p>" +
-        "</div>";
+        resultado.innerHTML =
+            "<div class='ai-cargando'>" +
+            "<strong>🤖 TEOS AI</strong>" +
+            "<p>📝 Preparando el artículo...</p>" +
+            "</div>";
 
+    }
 
     try {
 
         const respuesta =
             await fetch(
-                "http://localhost:3000/api/preparar-articulo",
+                "/api/preparar-articulo",
                 {
-
                     method: "POST",
 
                     headers: {
-
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
-                        JSON.stringify(noticia)
-
+                        JSON.stringify(
+                            noticia
+                        )
                 }
             );
 
-
         const datos =
             await respuesta.json();
-
 
         if (!respuesta.ok) {
 
@@ -492,147 +563,136 @@ async function prepararArticulo() {
 
         }
 
-
         const articulo =
             datos;
-
 
         articuloGenerado =
             articulo;
 
+        if (resultado) {
 
-        resultado.innerHTML = `
+            resultado.innerHTML = `
 
-            <div class="vista-previa-articulo">
+                <div class="vista-previa-articulo">
 
-                <span class="etiqueta">
-                    🤖 BORRADOR TEOS AI
-                </span>
+                    <span class="etiqueta">
+                        🤖 BORRADOR TEOS AI
+                    </span>
 
-                <h2>
-                    ${escaparHTML(
-                        articulo.titulo
-                    )}
-                </h2>
+                    <h2>
+                        ${escaparHTML(
+                            articulo.titulo
+                        )}
+                    </h2>
 
+                    ${
+                        articulo.imagen
+                        ?
+                        `
+                        <div class="vista-previa-imagen">
 
-                ${
-                    articulo.imagen
-                    ?
-                    `
-                    <div class="vista-previa-imagen">
+                            <img
+                                src="${escaparAtributo(
+                                    articulo.imagen
+                                )}"
+                                alt="${escaparAtributo(
+                                    articulo.titulo
+                                )}"
+                                loading="lazy"
+                            >
 
-                        <img
-                            src="${escaparAtributo(
-                                articulo.imagen
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+                    <h3>
+                        Introducción
+                    </h3>
+
+                    <p>
+                        ${escaparHTML(
+                            articulo.introduccion
+                        )}
+                    </p>
+
+                    <h3>
+                        Desarrollo
+                    </h3>
+
+                    <p>
+                        ${escaparHTML(
+                            articulo.contenido
+                        )}
+                    </p>
+
+                    <h3>
+                        Conclusión
+                    </h3>
+
+                    <p>
+                        ${escaparHTML(
+                            articulo.conclusion
+                        )}
+                    </p>
+
+                    <h3>
+                        Fuente
+                    </h3>
+
+                    <p>
+                        📰 ${escaparHTML(
+                            articulo.fuente
+                        )}
+                    </p>
+
+                    <p>
+
+                        <a
+                            href="${escaparAtributo(
+                                articulo.enlace
                             )}"
-                            alt="${escaparAtributo(
-                                articulo.titulo
-                            )}"
-                            loading="lazy"
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
+                            🔗 Ver fuente original
+                        </a>
+
+                    </p>
+
+                    <div class="acciones-articulo">
+
+                        <button
+                            id="volverNoticias"
+                            class="boton-preparar"
+                        >
+                            ← Volver
+                        </button>
+
+                        <button
+                            id="publicarArticulo"
+                            class="boton-preparar"
+                        >
+                            🚀 Publicar
+                        </button>
 
                     </div>
-                    `
-                    :
-                    ""
-                }
-
-
-                <h3>
-                    Introducción
-                </h3>
-
-                <p>
-                    ${escaparHTML(
-                        articulo.introduccion
-                    )}
-                </p>
-
-
-                <h3>
-                    Desarrollo
-                </h3>
-
-                <p>
-                    ${escaparHTML(
-                        articulo.contenido
-                    )}
-                </p>
-
-
-                <h3>
-                    Conclusión
-                </h3>
-
-                <p>
-                    ${escaparHTML(
-                        articulo.conclusion
-                    )}
-                </p>
-
-
-                <h3>
-                    Fuente
-                </h3>
-
-                <p>
-                    📰 ${escaparHTML(
-                        articulo.fuente
-                    )}
-                </p>
-
-
-                <p>
-
-                    <a
-                        href="${escaparAtributo(
-                            articulo.enlace
-                        )}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-
-                        🔗 Ver fuente original
-
-                    </a>
-
-                </p>
-
-
-                <div class="acciones-articulo">
-
-                    <button
-                        id="volverNoticias"
-                        class="boton-preparar"
-                    >
-
-                        ← Volver
-
-                    </button>
-
-
-                    <button
-                        id="publicarArticulo"
-                        class="boton-preparar"
-                    >
-
-                        🚀 Publicar
-
-                    </button>
 
                 </div>
 
-            </div>
+            `;
 
-        `;
+        }
 
-
-        document
-            .getElementById(
+        const botonVolver =
+            document.getElementById(
                 "volverNoticias"
-            )
-            .addEventListener(
+            );
+
+        if (botonVolver) {
+
+            botonVolver.addEventListener(
                 "click",
                 function () {
 
@@ -643,33 +703,45 @@ async function prepararArticulo() {
                 }
             );
 
+        }
 
-        document
-            .getElementById(
+        const botonPublicar =
+            document.getElementById(
                 "publicarArticulo"
-            )
-            .addEventListener(
+            );
+
+        if (botonPublicar) {
+
+            botonPublicar.addEventListener(
                 "click",
                 publicarArticulo
             );
 
+        }
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "❌ Error preparando artículo:",
+            error
+        );
 
+        if (resultado) {
 
-        resultado.innerHTML =
-            "<div class='ai-error'>" +
-            "<strong>" +
-            "❌ No se pudo preparar el artículo." +
-            "</strong>" +
-            "<p>" +
-            escaparHTML(
-                error.message
-            ) +
-            "</p>" +
-            "</div>";
+            resultado.innerHTML =
+                "<div class='ai-error'>" +
+                "<strong>" +
+                "❌ No se pudo preparar el artículo." +
+                "</strong>" +
+                "<p>" +
+                escaparHTML(
+                    error.message ||
+                    "Error preparando el artículo."
+                ) +
+                "</p>" +
+                "</div>";
+
+        }
 
     }
 
@@ -687,54 +759,43 @@ async function publicarArticulo() {
             "publicarArticulo"
         );
 
-
     if (!boton) {
-
         return;
-
     }
 
-
-    boton.disabled = true;
-
+    boton.disabled =
+        true;
 
     boton.textContent =
         "⏳ Publicando...";
 
-
     try {
 
-        const noticiaParaPublicar = {
-
-            ...(articuloGenerado || {})
-
-        };
-
+        const noticiaParaPublicar =
+            {
+                ...(articuloGenerado || {})
+            };
 
         console.log(
             "🖼️ IMAGEN QUE SE VA A PUBLICAR:",
             noticiaParaPublicar.imagen
         );
 
-
         console.log(
             "🎨 PROMPT DE IMAGEN:",
             noticiaParaPublicar.imagenPrompt
         );
 
-
         const respuesta =
             await fetch(
-                "http://localhost:3000/api/publicar-articulo",
+                "/api/publicar-articulo",
                 {
 
                     method: "POST",
 
                     headers: {
-
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
@@ -745,10 +806,8 @@ async function publicarArticulo() {
                 }
             );
 
-
         const datos =
             await respuesta.json();
-
 
         if (!respuesta.ok) {
 
@@ -759,62 +818,64 @@ async function publicarArticulo() {
 
         }
 
+        if (resultado) {
 
-        resultado.innerHTML = `
+            resultado.innerHTML = `
 
-            <div class="ai-exito">
+                <div class="ai-exito">
 
-                <h2>
-                    ✅ ¡Noticia publicada!
-                </h2>
+                    <h2>
+                        ✅ ¡Noticia publicada!
+                    </h2>
 
-
-                <p>
-                    ${escaparHTML(
-                        datos.mensaje
-                    )}
-                </p>
-
-
-                <p>
-                    📄 Archivo:
-                    <strong>
+                    <p>
                         ${escaparHTML(
-                            datos.archivo
+                            datos.mensaje ||
+                            "Noticia publicada correctamente."
                         )}
-                    </strong>
-                </p>
+                    </p>
 
+                    <p>
+                        📄 Archivo:
+                        <strong>
+                            ${escaparHTML(
+                                datos.archivo ||
+                                ""
+                            )}
+                        </strong>
+                    </p>
 
-                <p>
-                    📁 Ubicación:
-                    <strong>
-                        ${escaparHTML(
-                            datos.ruta
-                        )}
-                    </strong>
-                </p>
+                    <p>
+                        📁 Ubicación:
+                        <strong>
+                            ${escaparHTML(
+                                datos.ruta ||
+                                ""
+                            )}
+                        </strong>
+                    </p>
 
+                    <button
+                        id="volverNoticias"
+                        class="boton-preparar"
+                    >
+                        ← Volver a noticias
+                    </button>
 
-                <button
-                    id="volverNoticias"
-                    class="boton-preparar"
-                >
+                </div>
 
-                    ← Volver a noticias
+            `;
 
-                </button>
+        }
 
-            </div>
-
-        `;
-
-
-        document
-            .getElementById(
+        const botonVolver =
+            document.getElementById(
                 "volverNoticias"
-            )
-            .addEventListener(
+            );
+
+        if (botonVolver) {
+
+            botonVolver.addEventListener(
                 "click",
                 function () {
 
@@ -825,22 +886,27 @@ async function publicarArticulo() {
                 }
             );
 
+        }
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "❌ Error publicando artículo:",
+            error
+        );
 
-
-        boton.disabled = false;
-
+        boton.disabled =
+            false;
 
         boton.textContent =
             "🚀 Publicar";
 
-
         alert(
             "❌ " +
-            error.message
+            (
+                error.message ||
+                "No se pudo publicar."
+            )
         );
 
     }
@@ -862,8 +928,8 @@ const resultadoRankings =
         "resultadoRankings"
     );
 
-
-let rankingsGenerados = null;
+let rankingsGenerados =
+    null;
 
 
 // =====================================================
@@ -887,11 +953,8 @@ if (botonPrepararRankings) {
 async function prepararRankings() {
 
     if (!resultadoRankings) {
-
         return;
-
     }
-
 
     if (botonPrepararRankings) {
 
@@ -902,7 +965,6 @@ async function prepararRankings() {
             "⏳ TEOS AI está preparando los rankings...";
 
     }
-
 
     resultadoRankings.innerHTML = `
 
@@ -924,33 +986,27 @@ async function prepararRankings() {
 
     `;
 
-
     try {
 
         const respuesta =
             await fetch(
-                "http://localhost:3000/api/preparar-rankings",
+                "/api/preparar-rankings",
                 {
 
                     method: "POST",
 
                     headers: {
-
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
                         JSON.stringify({})
-
                 }
             );
 
-
         const datos =
             await respuesta.json();
-
 
         if (!respuesta.ok) {
 
@@ -961,10 +1017,11 @@ async function prepararRankings() {
 
         }
 
-
         if (
             !datos.rankings ||
-            !Array.isArray(datos.rankings)
+            !Array.isArray(
+                datos.rankings
+            )
         ) {
 
             throw new Error(
@@ -972,7 +1029,6 @@ async function prepararRankings() {
             );
 
         }
-
 
         if (
             datos.rankings.length !== 10
@@ -984,20 +1040,19 @@ async function prepararRankings() {
 
         }
 
-
         rankingsGenerados =
             datos.rankings;
-
 
         mostrarRankings(
             rankingsGenerados
         );
 
-
     } catch (error) {
 
-        console.error(error);
-
+        console.error(
+            "❌ Error preparando rankings:",
+            error
+        );
 
         resultadoRankings.innerHTML = `
 
@@ -1009,13 +1064,9 @@ async function prepararRankings() {
 
                 <p>
                     ${escaparHTML(
-                        error.message
+                        error.message ||
+                        "Error preparando rankings."
                     )}
-                </p>
-
-                <p>
-                    Comprueba que servidor.js esté funcionando
-                    correctamente.
                 </p>
 
             </div>
@@ -1043,10 +1094,16 @@ async function prepararRankings() {
 // MOSTRAR LOS 10 RANKINGS
 // =====================================================
 
-function mostrarRankings(rankings) {
+function mostrarRankings(
+    rankings
+) {
 
-    let html = "";
+    if (!resultadoRankings) {
+        return;
+    }
 
+    let html =
+        "";
 
     html += `
 
@@ -1066,52 +1123,44 @@ function mostrarRankings(rankings) {
 
     `;
 
-
     rankings.forEach(
-        function (ranking, indice) {
+        function (
+            ranking,
+            indice
+        ) {
 
             html += `
 
                 <article class="ranking-ai">
 
                     <h2>
-
                         🏆 Ranking ${indice + 1}
-
                     </h2>
 
-
                     <h3>
-
                         ${escaparHTML(
                             ranking.titulo ||
                             "Sin título"
                         )}
-
                     </h3>
-
 
                     ${
                         ranking.introduccion
                         ?
                         `
                         <p>
-
                             ${escaparHTML(
                                 ranking.introduccion
                             )}
-
                         </p>
                         `
                         :
                         ""
                     }
 
-
                     <div class="juegos-ranking-ai">
 
             `;
-
 
             if (
                 ranking.juegos &&
@@ -1121,11 +1170,12 @@ function mostrarRankings(rankings) {
             ) {
 
                 ranking.juegos.forEach(
-                    function (juego) {
+                    function (
+                        juego
+                    ) {
 
                         let emoji =
                             "";
-
 
                         if (
                             juego.puesto === 1
@@ -1152,7 +1202,6 @@ function mostrarRankings(rankings) {
 
                         }
 
-
                         html += `
 
                             <div class="juego-ranking-ai">
@@ -1170,7 +1219,6 @@ function mostrarRankings(rankings) {
 
                                 </strong>
 
-
                                 <span>
 
                                     ⭐
@@ -1179,7 +1227,6 @@ function mostrarRankings(rankings) {
                                     )}
 
                                 </span>
-
 
                                 <p>
 
@@ -1198,11 +1245,9 @@ function mostrarRankings(rankings) {
 
             }
 
-
             html += `
 
                     </div>
-
 
                     ${
                         ranking.comoSeElaboro
@@ -1221,7 +1266,6 @@ function mostrarRankings(rankings) {
                         :
                         ""
                     }
-
 
                     ${
                         ranking.conclusion
@@ -1248,7 +1292,6 @@ function mostrarRankings(rankings) {
         }
     );
 
-
     html += `
 
             <div class="acciones-rankings">
@@ -1257,19 +1300,14 @@ function mostrarRankings(rankings) {
                     id="volverPrepararRankings"
                     class="boton-preparar"
                 >
-
                     🔄 Generar nuevamente
-
                 </button>
-
 
                 <button
                     id="publicarRankings"
                     class="boton-preparar"
                 >
-
                     🚀 Publicar los 10 rankings
-
                 </button>
 
             </div>
@@ -1278,16 +1316,13 @@ function mostrarRankings(rankings) {
 
     `;
 
-
     resultadoRankings.innerHTML =
         html;
-
 
     const botonRegenerar =
         document.getElementById(
             "volverPrepararRankings"
         );
-
 
     if (botonRegenerar) {
 
@@ -1298,12 +1333,10 @@ function mostrarRankings(rankings) {
 
     }
 
-
     const botonPublicar =
         document.getElementById(
             "publicarRankings"
         );
-
 
     if (botonPublicar) {
 
@@ -1338,7 +1371,6 @@ async function publicarRankings() {
 
     }
 
-
     if (
         rankingsGenerados.length !== 10
     ) {
@@ -1351,26 +1383,20 @@ async function publicarRankings() {
 
     }
 
-
     const confirmar =
         confirm(
-            "⚠️ ¿Seguro que quieres publicar los 10 rankings?\\n\\n" +
+            "⚠️ ¿Seguro que quieres publicar los 10 rankings?\n\n" +
             "Esto reemplazará el contenido actual de ranking1.html hasta ranking10.html."
         );
 
-
     if (!confirmar) {
-
         return;
-
     }
-
 
     const boton =
         document.getElementById(
             "publicarRankings"
         );
-
 
     if (boton) {
 
@@ -1382,12 +1408,11 @@ async function publicarRankings() {
 
     }
 
-
     try {
 
         const respuesta =
             await fetch(
-                "http://localhost:3000/api/publicar-rankings",
+                "/api/publicar-rankings",
                 {
 
                     method: "POST",
@@ -1410,10 +1435,8 @@ async function publicarRankings() {
                 }
             );
 
-
         const datos =
             await respuesta.json();
-
 
         if (!respuesta.ok) {
 
@@ -1424,7 +1447,6 @@ async function publicarRankings() {
 
         }
 
-
         resultadoRankings.innerHTML = `
 
             <div class="ai-exito">
@@ -1433,81 +1455,48 @@ async function publicarRankings() {
                     🚀 ¡Rankings publicados!
                 </h2>
 
-
                 <p>
                     Los 10 rankings fueron actualizados correctamente.
                 </p>
-
 
                 <p>
                     TEOS AI reemplazó:
                 </p>
 
-
                 <ul>
 
-                    <li>
-                        ranking1.html
-                    </li>
-
-                    <li>
-                        ranking2.html
-                    </li>
-
-                    <li>
-                        ranking3.html
-                    </li>
-
-                    <li>
-                        ranking4.html
-                    </li>
-
-                    <li>
-                        ranking5.html
-                    </li>
-
-                    <li>
-                        ranking6.html
-                    </li>
-
-                    <li>
-                        ranking7.html
-                    </li>
-
-                    <li>
-                        ranking8.html
-                    </li>
-
-                    <li>
-                        ranking9.html
-                    </li>
-
-                    <li>
-                        ranking10.html
-                    </li>
+                    <li>ranking1.html</li>
+                    <li>ranking2.html</li>
+                    <li>ranking3.html</li>
+                    <li>ranking4.html</li>
+                    <li>ranking5.html</li>
+                    <li>ranking6.html</li>
+                    <li>ranking7.html</li>
+                    <li>ranking8.html</li>
+                    <li>ranking9.html</li>
+                    <li>ranking10.html</li>
 
                 </ul>
-
 
                 <button
                     id="volverRankings"
                     class="boton-preparar"
                 >
-
                     🏆 Volver a Rankings
-
                 </button>
 
             </div>
 
         `;
 
-
-        document
-            .getElementById(
+        const botonVolver =
+            document.getElementById(
                 "volverRankings"
-            )
-            .addEventListener(
+            );
+
+        if (botonVolver) {
+
+            botonVolver.addEventListener(
                 "click",
                 function () {
 
@@ -1523,11 +1512,14 @@ async function publicarRankings() {
                 }
             );
 
+        }
 
     } catch (error) {
 
-        console.error(error);
-
+        console.error(
+            "❌ Error publicando rankings:",
+            error
+        );
 
         if (boton) {
 
@@ -1539,7 +1531,6 @@ async function publicarRankings() {
 
         }
 
-
         resultadoRankings.innerHTML = `
 
             <div class="ai-error">
@@ -1550,7 +1541,8 @@ async function publicarRankings() {
 
                 <p>
                     ${escaparHTML(
-                        error.message
+                        error.message ||
+                        "No se pudieron publicar los rankings."
                     )}
                 </p>
 
