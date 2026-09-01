@@ -1,18 +1,26 @@
 {
   "name": "teos-gaming",
   "version": "1.0.0",
-  "description": "",
-  "main": "noticias.js",
+  "description": "TEOS Gaming - Noticias, rankings y contenido gaming con TEOS AI",
+  "main": "servidor.js",
   "scripts": {
+    "start": "node servidor.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "teos",
+    "gaming",
+    "videojuegos",
+    "gemini",
+    "ai"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@google/genai": "^2.18.0",
+    "@google/genai": "^2.19.0",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "rss-parser": "^3.13.0"
   }
