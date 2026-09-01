@@ -4,7 +4,7 @@
 
 
 // =====================================================
-// RANKINGS INICIALES
+// RANKINGS
 // =====================================================
 
 const rankings = [
@@ -15,7 +15,7 @@ const rankings = [
         categoria: "Aventura",
         descripcion: "Una selección de videojuegos de aventura que destacan por su exploración, historia y mundo.",
         imagen: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1000&q=80",
-        url: "rankings/ranking2.html"
+        url: "rankings/ranking1.html"
     },
 
     {
@@ -24,7 +24,7 @@ const rankings = [
         categoria: "RPG",
         descripcion: "Juegos de rol que destacan por sus mundos, personajes, progresión y posibilidades de juego.",
         imagen: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80",
-        url: "rankings/ranking1.html"
+        url: "rankings/ranking2.html"
     },
 
     {
@@ -47,57 +47,58 @@ const rankings = [
 
     {
         id: 5,
-        titulo: "Mejores juegos de mundo abierto",
-        categoria: "Mundo abierto",
-        descripcion: "Una selección de los mejores juegos de mundo abierto por su exploración, libertad, contenido y posibilidades.",
-        imagen: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80",
+        titulo: "Mejores juegos de acción",
+        categoria: "Acción",
+        descripcion: "Una selección de los mejores juegos de acción por su combate, jugabilidad, intensidad y experiencia general.",
+        imagen: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80",
         url: "rankings/ranking5.html"
     },
 
     {
         id: 6,
-        titulo: "Mejores juegos de acción",
-        categoria: "Acción",
-        descripcion: "Una selección de los mejores juegos de acción por su combate, jugabilidad, intensidad y experiencia general.",
-        imagen: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80",
+        titulo: "Mejores juegos de mundo abierto",
+        categoria: "Mundo abierto",
+        descripcion: "Una selección de los mejores juegos de mundo abierto por su exploración, libertad, contenido y posibilidades.",
+        imagen: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1000&q=80",
         url: "rankings/ranking6.html"
     },
 
     {
         id: 7,
-        titulo: "Mejores juegos de terror",
-        categoria: "Terror",
-        descripcion: "Una selección de los mejores juegos de terror por su ambientación, tensión, historia y capacidad para mantener al jugador en suspense.",
-        imagen: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=1000&q=80",
+        titulo: "Mejores juegos multijugador",
+        categoria: "Multijugador",
+        descripcion: "Una selección de los mejores juegos multijugador por su comunidad, diversión, jugabilidad y experiencia competitiva.",
+        imagen: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80",
         url: "rankings/ranking7.html"
     },
 
     {
         id: 8,
-        titulo: "Mejores juegos de mundo abierto",
-        categoria: "Mundo abierto",
-        descripcion: "Una selección de los mejores juegos de mundo abierto por su exploración, libertad, contenido, mundo y experiencia general.",
-        imagen: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1000&q=80",
+        titulo: "Mejores juegos de terror",
+        categoria: "Terror",
+        descripcion: "Una selección de los mejores juegos de terror por su ambientación, tensión, historia y capacidad para mantener al jugador en suspense.",
+        imagen: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=1000&q=80",
         url: "rankings/ranking8.html"
     },
 
     {
         id: 9,
-        titulo: "Mejores juegos de acción",
-        categoria: "Acción",
-        descripcion: "Una selección de los mejores juegos de acción por sus combates, jugabilidad, ritmo, variedad y experiencia general.",
-        imagen: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80",
+        titulo: "Mejores juegos de supervivencia",
+        categoria: "Supervivencia",
+        descripcion: "Una selección de los mejores juegos de supervivencia por sus recursos, exploración, dificultad y progresión.",
+        imagen: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=1000&q=80",
         url: "rankings/ranking9.html"
     },
 
     {
         id: 10,
-        titulo: "Mejores juegos multijugador online",
-        categoria: "Multijugador",
-        descripcion: "Una selección de los mejores juegos multijugador online por su comunidad, diversión, jugabilidad y experiencia competitiva.",
-        imagen: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80",
+        titulo: "Mejores juegos para PC",
+        categoria: "PC",
+        descripcion: "Una selección de los mejores juegos para PC por su calidad, profundidad, variedad y experiencia general.",
+        imagen: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=80",
         url: "rankings/ranking10.html"
-    },
+    }
+
 ];
 
 
@@ -118,6 +119,7 @@ function mostrarRankings() {
         );
 
         return;
+
     }
 
 
@@ -147,7 +149,6 @@ function mostrarRankings() {
 
         portada.className =
             "portada-juego";
-
 
         portada.style.backgroundImage =
             "url('" + ranking.imagen + "')";
@@ -252,7 +253,7 @@ function mostrarRankings() {
 
 
         // =================================================
-        // AGREGAR AL CONTENEDOR
+        // AGREGAR TARJETA
         // =================================================
 
         contenedor.appendChild(tarjeta);
