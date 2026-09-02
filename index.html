@@ -22,12 +22,237 @@
         content="videojuegos, noticias gaming, juegos, PC, consolas, Android, lanzamientos, guías"
     >
 
+    <link rel="icon" type="image/png" href="imagenes/logo-teos-gaming.png">
+
     <link rel="stylesheet" href="estilo.css">
+
+
+    <!-- =========================
+         PANTALLA DE BIENVENIDA
+    ========================== -->
+
+    <style>
+
+        #pantallaBienvenida {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(40, 40, 40, 0.35) 0%,
+                    rgba(0, 0, 0, 0.96) 65%,
+                    #000000 100%
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            transition:
+                opacity 0.7s ease,
+                visibility 0.7s ease;
+        }
+
+
+        #pantallaBienvenida.oculta {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+
+        .bienvenida-contenido {
+            width: 90%;
+            max-width: 650px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            animation: aparecerBienvenida 1s ease;
+        }
+
+
+        .bienvenida-logo {
+            width: 230px;
+            max-width: 65vw;
+
+            object-fit: contain;
+
+            margin-bottom: 18px;
+
+            filter:
+                drop-shadow(0 0 12px rgba(255, 40, 40, 0.25));
+
+            animation: logoEntrada 1.2s ease;
+        }
+
+
+        .bienvenida-titulo {
+            margin: 0;
+
+            color: #ffffff;
+
+            font-size: clamp(42px, 8vw, 76px);
+
+            font-weight: 900;
+
+            letter-spacing: 5px;
+
+            line-height: 1;
+        }
+
+
+        .bienvenida-subtitulo {
+            margin: 14px 0 0;
+
+            color: #d0d0d0;
+
+            font-size: clamp(14px, 3vw, 19px);
+
+            letter-spacing: 2px;
+        }
+
+
+        .bienvenida-linea {
+            width: 100px;
+            height: 2px;
+
+            margin: 25px 0;
+
+            background: #e62424;
+        }
+
+
+        .boton-entrar-teos {
+            border: none;
+
+            padding: 14px 42px;
+
+            background: #e62424;
+
+            color: #ffffff;
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            cursor: pointer;
+
+            border-radius: 4px;
+
+            box-shadow: 0 0 20px rgba(230, 36, 36, 0.25);
+
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .boton-entrar-teos:hover {
+            background: #ff3030;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 0 28px rgba(230, 36, 36, 0.45);
+        }
+
+
+        .bienvenida-pequena {
+            margin-top: 18px;
+
+            color: #777777;
+
+            font-size: 11px;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+
+        @keyframes aparecerBienvenida {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes logoEntrada {
+
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+    </style>
 
 </head>
 
 
 <body>
+
+
+    <!-- =========================
+         PANTALLA DE BIENVENIDA
+    ========================== -->
+
+    <div id="pantallaBienvenida">
+
+        <div class="bienvenida-contenido">
+
+            <img
+                src="imagenes/logo-teos-gaming.png"
+                alt="TEOS Gaming"
+                class="bienvenida-logo"
+            >
+
+            <h1 class="bienvenida-titulo">
+                TEOS GAMING
+            </h1>
+
+            <p class="bienvenida-subtitulo">
+                Noticias actualizadas del mundo gaming
+            </p>
+
+            <div class="bienvenida-linea"></div>
+
+            <button
+                class="boton-entrar-teos"
+                id="botonEntrarTeos">
+                ENTRAR
+            </button>
+
+            <div class="bienvenida-pequena">
+                Tu mundo gaming comienza aquí
+            </div>
+
+        </div>
+
+    </div>
+
 
 
     <!-- =========================
@@ -573,6 +798,28 @@
     <script src="noticias.js"></script>
 
     <script src="script.js"></script>
+
+
+    <!-- =========================
+         ENTRADA A TEOS GAMING
+    ========================== -->
+
+    <script>
+
+        const pantallaBienvenida =
+            document.getElementById("pantallaBienvenida");
+
+        const botonEntrarTeos =
+            document.getElementById("botonEntrarTeos");
+
+
+        botonEntrarTeos.addEventListener("click", function () {
+
+            pantallaBienvenida.classList.add("oculta");
+
+        });
+
+    </script>
 
 
 </body>
