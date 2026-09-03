@@ -1,6 +1,6 @@
 // =====================================================
 // TEOS GAMING - SERVIDOR PRINCIPAL
-// TEOS AI + NOTICIAS + RANKINGS
+// TEOS AI + NOTICIAS + RANKINGS + SUPABASE
 // =====================================================
 
 const express = require("express");
@@ -9,6 +9,7 @@ const Parser = require("rss-parser");
 const fs = require("fs");
 const path = require("path");
 const { GoogleGenAI } = require("@google/genai");
+const { createClient } = require("@supabase/supabase-js");
 
 try {
     require("dotenv").config();
@@ -26,8 +27,7 @@ const app = express();
 const parser = new Parser({
     timeout: 15000,
     headers: {
-        "User-Agent":
-            "TEOS Gaming/1.0 RSS Reader"
+        "User-Agent": "TEOS Gaming/1.0 RSS Reader"
     }
 });
 
@@ -45,6 +45,27 @@ app.use(
 
 const PORT =
     process.env.PORT || 3000;
+
+
+// =====================================================
+// SUPABASE
+// =====================================================
+
+const SUPABASE_URL =
+    process.env.SUPABASE_URL || "";
+
+const SUPABASE_KEY =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_KEY ||
+    "";
+
+const supabase =
+    SUPABASE_URL && SUPABASE_KEY
+        ? createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        )
+        : null;
 
 
 // =====================================================
@@ -189,8 +210,6 @@ async function generarConGemini(prompt) {
                     maxIntentosPorModelo
                 ) {
 
-                    // Espera progresiva:
-                    // 5s, 10s
                     const espera =
                         intento === 1
                             ? 5000
@@ -274,7 +293,6 @@ function obtenerImagenRSS(item) {
 
     let imagen = "";
 
-
     if (
         item.enclosure &&
         item.enclosure.url
@@ -284,7 +302,6 @@ function obtenerImagenRSS(item) {
             item.enclosure.url;
 
     }
-
 
     if (
         !imagen &&
@@ -303,7 +320,6 @@ function obtenerImagenRSS(item) {
 
     }
 
-
     if (
         !imagen &&
         item["media:thumbnail"]
@@ -320,7 +336,6 @@ function obtenerImagenRSS(item) {
         }
 
     }
-
 
     if (
         !imagen &&
@@ -346,7 +361,6 @@ function obtenerImagenRSS(item) {
 
     }
 
-
     if (!imagen) {
 
         const contenido =
@@ -355,12 +369,10 @@ function obtenerImagenRSS(item) {
             item.description ||
             "";
 
-
         const coincidencia =
             contenido.match(
                 /<img[^>]+src=["']([^"']+)["']/i
             );
-
 
         if (coincidencia) {
 
@@ -370,7 +382,6 @@ function obtenerImagenRSS(item) {
         }
 
     }
-
 
     return String(
         imagen || ""
@@ -395,7 +406,6 @@ function obtenerFechaItem(item) {
 
     ];
 
-
     for (
         const valor
         of fechas
@@ -405,10 +415,8 @@ function obtenerFechaItem(item) {
             continue;
         }
 
-
         const fecha =
             new Date(valor);
-
 
         if (
             !isNaN(
@@ -421,7 +429,6 @@ function obtenerFechaItem(item) {
         }
 
     }
-
 
     return null;
 
@@ -438,7 +445,6 @@ function limpiarTexto(texto) {
         return "";
     }
 
-
     return String(texto)
         .replace(
             /<[^>]*>/g,
@@ -449,6 +455,310 @@ function limpiarTexto(texto) {
             " "
         )
         .trim();
+
+}
+
+
+// =====================================================
+// CREAR SLUG
+// =====================================================
+
+function crearSlug(titulo) {
+
+    let slug =
+        String(
+            titulo || ""
+        )
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .replace(
+            /[^a-z0-9]+/g,
+            "-"
+        )
+        .replace(
+            /^-+|-+$/g,
+            ""
+        )
+        .substring(
+            0,
+            80
+        );
+
+    if (!slug) {
+
+        slug =
+            "noticia-teos";
+
+    }
+
+    return slug;
+
+}
+
+
+// =====================================================
+// ESCAPAR HTML
+// =====================================================
+
+function escaparHTML(texto) {
+
+    if (!texto) {
+        return "";
+    }
+
+    return String(texto)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// =====================================================
+// GENERAR HTML DE NOTICIA
+// =====================================================
+
+function generarHTMLNoticia(
+    articulo
+) {
+
+    const tituloHTML =
+        escaparHTML(
+            articulo.titulo
+        );
+
+    const introduccionHTML =
+        escaparHTML(
+            articulo.introduccion
+        );
+
+    const contenidoHTML =
+        escaparHTML(
+            articulo.contenido
+        );
+
+    const conclusionHTML =
+        escaparHTML(
+            articulo.conclusion
+        );
+
+    const fuenteHTML =
+        escaparHTML(
+            articulo.fuente ||
+            "Fuente original"
+        );
+
+    const fechaHTML =
+        escaparHTML(
+            articulo.fecha ||
+            new Date().toISOString()
+        );
+
+    const enlaceHTML =
+        escaparHTML(
+            articulo.enlace ||
+            "#"
+        );
+
+    let imagenHTML =
+        "";
+
+    if (
+        articulo.imagen
+    ) {
+
+        imagenHTML = `
+
+            <div class="imagen-articulo-contenedor">
+
+                <img
+                    src="${escaparHTML(articulo.imagen)}"
+                    alt="${tituloHTML}"
+                    class="imagen-articulo"
+                    loading="lazy"
+                >
+
+            </div>
+
+        `;
+
+    }
+
+    return `<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    ${tituloHTML} | TEOS Gaming
+</title>
+
+<meta
+    name="description"
+    content="${introduccionHTML}"
+>
+
+<link
+    rel="stylesheet"
+    href="/estilo.css"
+>
+
+</head>
+
+<body>
+
+<header class="encabezado">
+
+    <div class="logo">
+        🎮 TEOS <span>GAMING</span>
+    </div>
+
+    <nav class="menu">
+
+        <a href="/index.html">Inicio</a>
+        <a href="/noticias.html">Noticias</a>
+        <a href="/lanzamientos.html">Lanzamientos</a>
+        <a href="/guias.html">Guías</a>
+        <a href="/rankings.html">Rankings</a>
+        <a href="/pc.html">PC</a>
+        <a href="/android.html">Android</a>
+
+    </nav>
+
+</header>
+
+<main>
+
+    <article class="articulo">
+
+        ${imagenHTML}
+
+        <div class="articulo-cabecera">
+
+            <span class="etiqueta">
+                🎮 NOTICIAS
+            </span>
+
+            <h1>
+                ${tituloHTML}
+            </h1>
+
+            <p class="articulo-fecha">
+                📅 ${fechaHTML}
+                · Por TEOS Gaming
+            </p>
+
+        </div>
+
+        <div class="articulo-contenido">
+
+            <h2>
+                Introducción
+            </h2>
+
+            <p>
+                ${introduccionHTML}
+            </p>
+
+            <h2>
+                Desarrollo
+            </h2>
+
+            <p>
+                ${contenidoHTML}
+            </p>
+
+            <h2>
+                Conclusión
+            </h2>
+
+            <p>
+                ${conclusionHTML}
+            </p>
+
+            <div class="fuentes">
+
+                <h2>
+                    Fuente
+                </h2>
+
+                <p>
+                    📰 ${fuenteHTML}
+                </p>
+
+                <p>
+
+                    <a
+                        href="${enlaceHTML}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        🔗 Ver fuente original
+                    </a>
+
+                </p>
+
+            </div>
+
+            <div class="volver">
+
+                <a href="/noticias.html">
+                    ← Volver a Noticias
+                </a>
+
+            </div>
+
+        </div>
+
+    </article>
+
+</main>
+
+<footer class="footer">
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 TEOS Gaming.
+            Todos los derechos reservados.
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+
+</html>`;
 
 }
 
@@ -469,7 +779,6 @@ app.get(
             const ahora =
                 Date.now();
 
-
             const limite =
                 ahora -
                 (
@@ -478,7 +787,6 @@ app.get(
                     60 *
                     1000
                 );
-
 
             for (
                 const fuente
@@ -492,12 +800,10 @@ app.get(
                         fuente.nombre
                     );
 
-
                     const feed =
                         await parser.parseURL(
                             fuente.url
                         );
-
 
                     if (
                         !feed ||
@@ -510,7 +816,6 @@ app.get(
 
                     }
 
-
                     feed.items.forEach(
                         function(item) {
 
@@ -519,15 +824,12 @@ app.get(
                                     item
                                 );
 
-
                             if (!fecha) {
                                 return;
                             }
 
-
                             const timestamp =
                                 fecha.getTime();
-
 
                             if (
                                 timestamp <
@@ -538,18 +840,15 @@ app.get(
 
                             }
 
-
                             const titulo =
                                 limpiarTexto(
                                     item.title ||
                                     "Sin título"
                                 );
 
-
                             if (!titulo) {
                                 return;
                             }
-
 
                             resultados.push({
 
@@ -584,13 +883,11 @@ app.get(
                         }
                     );
 
-
                     console.log(
                         "✅ Feed leído:",
                         fuente.nombre,
                         feed.items.length
                     );
-
 
                 } catch (error) {
 
@@ -605,13 +902,11 @@ app.get(
 
             }
 
-
             const vistos =
                 new Set();
 
             const noticiasUnicas =
                 [];
-
 
             for (
                 const noticia
@@ -623,7 +918,6 @@ app.get(
                         .trim()
                         .toLowerCase();
 
-
                 if (
                     !clave ||
                     vistos.has(clave)
@@ -633,18 +927,15 @@ app.get(
 
                 }
 
-
                 vistos.add(
                     clave
                 );
-
 
                 noticiasUnicas.push(
                     noticia
                 );
 
             }
-
 
             noticiasUnicas.sort(
                 function(a, b) {
@@ -657,7 +948,6 @@ app.get(
                 }
             );
 
-
             res.json(
                 noticiasUnicas.slice(
                     0,
@@ -665,14 +955,12 @@ app.get(
                 )
             );
 
-
         } catch (error) {
 
             console.error(
                 "❌ Error general de noticias:",
                 error
             );
-
 
             res.status(
                 500
@@ -702,7 +990,6 @@ app.post(
             const noticia =
                 req.body;
 
-
             if (
                 !noticia ||
                 !noticia.titulo
@@ -718,7 +1005,6 @@ app.post(
                     });
 
             }
-
 
             const titulo =
                 noticia.titulo;
@@ -738,7 +1024,6 @@ app.post(
             const imagen =
                 noticia.imagen ||
                 "";
-
 
             const prompt = `
 
@@ -787,15 +1072,12 @@ Devuelve ÚNICAMENTE JSON válido:
 
 `;
 
-
             const texto =
                 await generarConGemini(
                     prompt
                 );
 
-
             let articuloIA;
-
 
             try {
 
@@ -811,7 +1093,6 @@ Devuelve ÚNICAMENTE JSON válido:
                 );
 
             }
-
 
             res.json({
 
@@ -850,14 +1131,12 @@ Devuelve ÚNICAMENTE JSON válido:
 
             });
 
-
         } catch (error) {
 
             console.error(
                 "❌ Error preparando artículo:",
                 error
             );
-
 
             res.status(
                 500
@@ -881,13 +1160,12 @@ Devuelve ÚNICAMENTE JSON válido:
 
 app.post(
     "/api/publicar-articulo",
-    function(req, res) {
+    async function(req, res) {
 
         try {
 
             const articulo =
                 req.body;
-
 
             if (
                 !articulo ||
@@ -906,368 +1184,228 @@ app.post(
             }
 
 
-            const carpetaNoticias =
-                path.join(
-                    __dirname,
-                    "noticias"
-                );
+            // =================================================
+            // COMPROBAR SUPABASE
+            // =================================================
 
+            if (!supabase) {
 
-            if (
-                !fs.existsSync(
-                    carpetaNoticias
-                )
-            ) {
+                return res
+                    .status(500)
+                    .json({
 
-                fs.mkdirSync(
-                    carpetaNoticias,
-                    {
-                        recursive:
-                            true
-                    }
-                );
+                        error:
+                            "Supabase no está configurado. Revisa SUPABASE_URL y SUPABASE_KEY en Render."
+
+                    });
 
             }
 
+
+            // =================================================
+            // CREAR SLUG
+            // =================================================
 
             let slug =
-                String(
+                crearSlug(
                     articulo.titulo
-                )
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(
-                    /[\u0300-\u036f]/g,
-                    ""
-                )
-                .replace(
-                    /[^a-z0-9]+/g,
-                    "-"
-                )
-                .replace(
-                    /^-+|-+$/g,
-                    ""
-                )
-                .substring(
-                    0,
-                    80
                 );
 
 
-            if (!slug) {
+            // =================================================
+            // EVITAR SLUG DUPLICADO
+            // =================================================
 
-                slug =
-                    "noticia-teos";
-
-            }
-
-
-            let nombreArchivo =
-                slug +
-                ".html";
-
-
-            let rutaArchivo =
-                path.join(
-                    carpetaNoticias,
-                    nombreArchivo
-                );
-
+            let slugOriginal =
+                slug;
 
             let contador =
                 2;
 
+            while (true) {
 
-            while (
-                fs.existsSync(
-                    rutaArchivo
-                )
-            ) {
+                const {
+                    data: existente,
+                    error: errorBusqueda
+                } =
+                    await supabase
+                        .from("noticias")
+                        .select("id")
+                        .eq(
+                            "slug",
+                            slug
+                        )
+                        .limit(1);
 
-                nombreArchivo =
-                    slug +
-                    "-" +
-                    contador +
-                    ".html";
+                if (errorBusqueda) {
 
-                rutaArchivo =
-                    path.join(
-                        carpetaNoticias,
-                        nombreArchivo
+                    throw new Error(
+                        "Error comprobando slug en Supabase: " +
+                        errorBusqueda.message
                     );
+
+                }
+
+                if (
+                    !existente ||
+                    existente.length === 0
+                ) {
+
+                    break;
+
+                }
+
+                slug =
+                    slugOriginal +
+                    "-" +
+                    contador;
 
                 contador++;
 
             }
 
 
-            function escaparHTML(
-                texto
-            ) {
+            // =================================================
+            // FECHA
+            // =================================================
 
-                if (!texto) {
-                    return "";
-                }
-
-
-                return String(
-                    texto
-                )
-                    .replace(
-                        /&/g,
-                        "&amp;"
-                    )
-                    .replace(
-                        /</g,
-                        "&lt;"
-                    )
-                    .replace(
-                        />/g,
-                        "&gt;"
-                    )
-                    .replace(
-                        /"/g,
-                        "&quot;"
-                    )
-                    .replace(
-                        /'/g,
-                        "&#039;"
-                    );
-
-            }
+            const fecha =
+                articulo.fecha ||
+                new Date().toISOString();
 
 
-            const tituloHTML =
-                escaparHTML(
-                    articulo.titulo
-                );
+            // =================================================
+            // GENERAR HTML
+            // =================================================
 
+            const articuloParaHTML = {
 
-            const introduccionHTML =
-                escaparHTML(
-                    articulo.introduccion
-                );
+                titulo:
+                    articulo.titulo,
 
+                introduccion:
+                    articulo.introduccion || "",
 
-            const contenidoHTML =
-                escaparHTML(
-                    articulo.contenido
-                );
+                contenido:
+                    articulo.contenido || "",
 
+                conclusion:
+                    articulo.conclusion || "",
 
-            const conclusionHTML =
-                escaparHTML(
-                    articulo.conclusion
-                );
+                imagen:
+                    articulo.imagen || "",
 
-
-            const fuenteHTML =
-                escaparHTML(
+                fuente:
                     articulo.fuente ||
-                    "Fuente original"
-                );
+                    "Fuente original",
 
-
-            const fechaHTML =
-                escaparHTML(
-                    articulo.fecha ||
-                    new Date().toISOString()
-                );
-
-
-            const enlaceHTML =
-                escaparHTML(
+                enlace:
                     articulo.enlace ||
-                    "#"
+                    "#",
+
+                fecha:
+                    fecha
+
+            };
+
+            const html =
+                generarHTMLNoticia(
+                    articuloParaHTML
                 );
 
 
-            let imagenHTML =
-                "";
+            // =================================================
+            // NOMBRE DEL ARCHIVO VIRTUAL
+            // =================================================
+
+            const nombreArchivo =
+                slug +
+                ".html";
 
 
-            if (
-                articulo.imagen
-            ) {
+            // =================================================
+            // GUARDAR EN SUPABASE
+            // =================================================
 
-                imagenHTML = `
+            const registro = {
 
-                    <div class="imagen-articulo-contenedor">
+                titulo:
+                    articulo.titulo,
 
-                        <img
-                            src="${articulo.imagen}"
-                            alt="${tituloHTML}"
-                            class="imagen-articulo"
-                            loading="lazy"
-                        >
+                introduccion:
+                    articulo.introduccion || "",
 
-                    </div>
+                contenido:
+                    articulo.contenido || "",
 
-                `;
+                conclusion:
+                    articulo.conclusion || "",
+
+                imagen:
+                    articulo.imagen || "",
+
+                imagen_prompt:
+                    articulo.imagenPrompt || "",
+
+                fuente:
+                    articulo.fuente ||
+                    "Fuente original",
+
+                enlace:
+                    articulo.enlace ||
+                    "#",
+
+                fecha:
+                    fecha,
+
+                archivo:
+                    nombreArchivo,
+
+                slug:
+                    slug,
+
+                html:
+                    html
+
+            };
+
+
+            const {
+                data,
+                error
+            } =
+                await supabase
+                    .from("noticias")
+                    .insert(
+                        registro
+                    )
+                    .select()
+                    .single();
+
+
+            if (error) {
+
+                console.error(
+                    "❌ Error Supabase:",
+                    error
+                );
+
+                throw new Error(
+                    "No se pudo guardar la noticia en Supabase: " +
+                    error.message
+                );
 
             }
 
 
-            const html = `<!DOCTYPE html>
-
-<html lang="es">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>
-    ${tituloHTML} | TEOS Gaming
-</title>
-
-<meta
-    name="description"
-    content="${introduccionHTML}"
->
-
-<link
-    rel="stylesheet"
-    href="../estilo.css"
->
-
-</head>
-
-<body>
-
-<header class="encabezado">
-
-    <div class="logo">
-        🎮 TEOS <span>GAMING</span>
-    </div>
-
-    <nav class="menu">
-
-        <a href="../index.html">Inicio</a>
-        <a href="../noticias.html">Noticias</a>
-        <a href="../lanzamientos.html">Lanzamientos</a>
-        <a href="../guias.html">Guías</a>
-        <a href="../rankings.html">Rankings</a>
-        <a href="../pc.html">PC</a>
-        <a href="../android.html">Android</a>
-
-    </nav>
-
-</header>
-
-<main>
-
-    <article class="articulo">
-
-        ${imagenHTML}
-
-        <div class="articulo-cabecera">
-
-            <span class="etiqueta">
-                🎮 NOTICIAS
-            </span>
-
-            <h1>
-                ${tituloHTML}
-            </h1>
-
-            <p class="articulo-fecha">
-                📅 ${fechaHTML}
-                · Por TEOS Gaming
-            </p>
-
-        </div>
-
-        <div class="articulo-contenido">
-
-            <h2>Introducción</h2>
-
-            <p>
-                ${introduccionHTML}
-            </p>
-
-            <h2>Desarrollo</h2>
-
-            <p>
-                ${contenidoHTML}
-            </p>
-
-            <h2>Conclusión</h2>
-
-            <p>
-                ${conclusionHTML}
-            </p>
-
-            <div class="fuentes">
-
-                <h2>Fuente</h2>
-
-                <p>
-                    📰 ${fuenteHTML}
-                </p>
-
-                <p>
-
-                    <a
-                        href="${enlaceHTML}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        🔗 Ver fuente original
-                    </a>
-
-                </p>
-
-            </div>
-
-            <div class="volver">
-
-                <a href="../noticias.html">
-                    ← Volver a Noticias
-                </a>
-
-            </div>
-
-        </div>
-
-    </article>
-
-</main>
-
-<footer class="footer">
-
-    <div class="footer-bottom">
-
-        <p>
-            © 2026 TEOS Gaming.
-            Todos los derechos reservados.
-        </p>
-
-    </div>
-
-</footer>
-
-</body>
-
-</html>`;
-
-
-            fs.writeFileSync(
-                rutaArchivo,
-                html,
-                "utf8"
-            );
-
+            // =================================================
+            // RESPUESTA
+            // =================================================
 
             console.log(
-                "✅ NOTICIA PUBLICADA:",
+                "✅ NOTICIA GUARDADA EN SUPABASE:",
                 nombreArchivo
             );
-
 
             res.json({
 
@@ -1275,7 +1413,10 @@ app.post(
                     true,
 
                 mensaje:
-                    "🚀 Noticia publicada correctamente.",
+                    "🚀 Noticia publicada correctamente y guardada permanentemente.",
+
+                id:
+                    data.id,
 
                 archivo:
                     nombreArchivo,
@@ -1290,14 +1431,12 @@ app.post(
 
             });
 
-
         } catch (error) {
 
             console.error(
                 "❌ Error publicando artículo:",
                 error
             );
-
 
             res.status(
                 500
@@ -1316,135 +1455,237 @@ app.post(
 
 
 // =====================================================
-// OBTENER NOTICIAS PUBLICADAS
+// SERVIR NOTICIAS DESDE SUPABASE
 // =====================================================
 
 app.get(
-    "/api/noticias-publicadas",
-    function(req, res) {
+    "/noticias/:archivo",
+    async function(req, res) {
 
         try {
 
-            const carpetaNoticias =
-                path.join(
-                    __dirname,
-                    "noticias"
-                );
-
+            const archivo =
+                req.params.archivo;
 
             if (
-                !fs.existsSync(
-                    carpetaNoticias
-                )
+                !archivo.endsWith(".html")
             ) {
 
-                return res.json(
-                    []
+                return res
+                    .status(404)
+                    .send(
+                        "Noticia no encontrada."
+                    );
+
+            }
+
+            const slug =
+                archivo.replace(
+                    /\.html$/i,
+                    ""
                 );
+
+
+            if (!supabase) {
+
+                return res
+                    .status(500)
+                    .send(
+                        "Supabase no está configurado."
+                    );
 
             }
 
 
-            const archivos =
-                fs.readdirSync(
-                    carpetaNoticias
-                )
-                .filter(
-                    archivo =>
-                        archivo.endsWith(
-                            ".html"
-                        )
+            const {
+                data,
+                error
+            } =
+                await supabase
+                    .from("noticias")
+                    .select("html")
+                    .eq(
+                        "slug",
+                        slug
+                    )
+                    .limit(1)
+                    .maybeSingle();
+
+
+            if (error) {
+
+                console.error(
+                    "❌ Error buscando noticia:",
+                    error
                 );
+
+                return res
+                    .status(500)
+                    .send(
+                        "Error consultando la noticia."
+                    );
+
+            }
+
+
+            if (
+                !data ||
+                !data.html
+            ) {
+
+                return res
+                    .status(404)
+                    .send(
+                        `
+                        <!DOCTYPE html>
+                        <html lang="es">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Noticia no encontrada | TEOS Gaming</title>
+                            <link rel="stylesheet" href="/estilo.css">
+                        </head>
+                        <body>
+                            <main style="padding:40px;text-align:center;">
+                                <h1>📰 Noticia no encontrada</h1>
+                                <p>Esta noticia ya no existe o no pudo ser encontrada.</p>
+                                <a href="/noticias.html">
+                                    ← Volver a Noticias
+                                </a>
+                            </main>
+                        </body>
+                        </html>
+                        `
+                    );
+
+            }
+
+
+            res
+                .type("html")
+                .send(
+                    data.html
+                );
+
+        } catch (error) {
+
+            console.error(
+                "❌ Error sirviendo noticia:",
+                error
+            );
+
+            res
+                .status(500)
+                .send(
+                    "No se pudo cargar la noticia."
+                );
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// OBTENER NOTICIAS PUBLICADAS DESDE SUPABASE
+// =====================================================
+
+app.get(
+    "/api/noticias-publicadas",
+    async function(req, res) {
+
+        try {
+
+            if (!supabase) {
+
+                return res
+                    .status(500)
+                    .json({
+
+                        error:
+                            "Supabase no está configurado."
+
+                    });
+
+            }
+
+
+            const {
+                data,
+                error
+            } =
+                await supabase
+                    .from("noticias")
+                    .select(
+                        "id,titulo,imagen,fecha,archivo,slug,created_at"
+                    )
+                    .order(
+                        "fecha",
+                        {
+                            ascending:
+                                false
+                        }
+                    );
+
+
+            if (error) {
+
+                console.error(
+                    "❌ Error obteniendo noticias desde Supabase:",
+                    error
+                );
+
+                return res
+                    .status(500)
+                    .json({
+
+                        error:
+                            "No se pudieron obtener las noticias desde Supabase."
+
+                    });
+
+            }
 
 
             const noticias =
-                archivos.map(
-                    function(archivo) {
+                (
+                    data ||
+                    []
+                ).map(
+                    function(noticia) {
 
-                        const ruta =
-                            path.join(
-                                carpetaNoticias,
-                                archivo
+                        const archivo =
+                            noticia.archivo ||
+                            (
+                                noticia.slug
+                                    ? noticia.slug + ".html"
+                                    : ""
                             );
-
-
-                        const contenido =
-                            fs.readFileSync(
-                                ruta,
-                                "utf8"
-                            );
-
-
-                        const tituloMatch =
-                            contenido.match(
-                                /<h1[^>]*>([\s\S]*?)<\/h1>/i
-                            );
-
-
-                        const fechaMatch =
-                            contenido.match(
-                                /class=["']articulo-fecha["'][^>]*>([\s\S]*?)<\/p>/i
-                            );
-
-
-                        const imagenMatch =
-                            contenido.match(
-                                /<img[^>]+src=["']([^"']+)["'][^>]*>/i
-                            );
-
-
-                        let titulo =
-                            tituloMatch
-                                ? tituloMatch[1]
-                                : archivo.replace(
-                                    ".html",
-                                    ""
-                                );
-
-
-                        let fecha =
-                            fechaMatch
-                                ? fechaMatch[1]
-                                : "";
-
-
-                        let imagen =
-                            imagenMatch
-                                ? imagenMatch[1]
-                                : "";
-
-
-                        titulo =
-                            titulo
-                                .replace(
-                                    /<[^>]+>/g,
-                                    ""
-                                )
-                                .trim();
-
-
-                        fecha =
-                            fecha
-                                .replace(
-                                    /<[^>]+>/g,
-                                    ""
-                                )
-                                .trim();
-
 
                         return {
 
-                            titulo,
+                            id:
+                                noticia.id,
 
-                            fecha,
+                            titulo:
+                                noticia.titulo,
 
-                            imagen,
+                            fecha:
+                                noticia.fecha ||
+                                noticia.created_at ||
+                                "",
 
-                            archivo,
+                            imagen:
+                                noticia.imagen ||
+                                "",
+
+                            archivo:
+                                archivo,
 
                             enlace:
-                                "noticias/" +
                                 archivo
+                                    ? "noticias/" + archivo
+                                    : ""
 
                         };
 
@@ -1452,26 +1693,9 @@ app.get(
                 );
 
 
-            noticias.sort(
-                function(a, b) {
-
-                    return (
-                        convertirFechaPublicada(
-                            b.fecha
-                        ) -
-                        convertirFechaPublicada(
-                            a.fecha
-                        )
-                    );
-
-                }
-            );
-
-
             res.json(
                 noticias
             );
-
 
         } catch (error) {
 
@@ -1479,7 +1703,6 @@ app.get(
                 "❌ Error obteniendo noticias publicadas:",
                 error
             );
-
 
             res.status(
                 500
@@ -1508,7 +1731,6 @@ function convertirFechaPublicada(
         return 0;
     }
 
-
     const texto =
         String(fecha)
             .replace(
@@ -1517,12 +1739,10 @@ function convertirFechaPublicada(
             )
             .trim();
 
-
     const directa =
         new Date(
             texto
         );
-
 
     if (
         !isNaN(
@@ -1534,12 +1754,10 @@ function convertirFechaPublicada(
 
     }
 
-
     const corto =
         texto.match(
             /(\d{1,2})\/(\d{1,2})\/(\d{4})/
         );
-
 
     if (corto) {
 
@@ -1559,7 +1777,6 @@ function convertirFechaPublicada(
         ).getTime();
 
     }
-
 
     return 0;
 
@@ -1662,10 +1879,6 @@ async function generarRankingsEnSegundoPlano() {
         );
 
 
-        // =================================================
-        // DEFINICIÓN EXACTA DE LOS 10 RANKINGS
-        // =================================================
-
         const criteriosRankings = [
 
             {
@@ -1754,10 +1967,6 @@ async function generarRankingsEnSegundoPlano() {
         const rankingsFinales = [];
 
 
-        // =================================================
-        // GENERAR CADA RANKING POR SEPARADO
-        // =================================================
-
         for (
             let i = 0;
             i < criteriosRankings.length;
@@ -1767,13 +1976,11 @@ async function generarRankingsEnSegundoPlano() {
             const criterio =
                 criteriosRankings[i];
 
-
             console.log(
                 "🏆 Generando ranking:",
                 criterio.numero,
                 criterio.titulo
             );
-
 
             const prompt = `
 
@@ -1819,8 +2026,12 @@ Para terror:
 - No EA Sports FC.
 - No Rocket League.
 - No Gran Turismo.
-- No juegos deportivos.
-- No shooters competitivos que no sean de terror.
+- No Football Manager.
+- No NBA 2K.
+- No Madden.
+- No Fortnite.
+- No League of Legends.
+- No Dota 2.
 
 Para RPG:
 - El juego debe ser realmente RPG o tener elementos RPG centrales.
@@ -1867,7 +2078,6 @@ Los puestos deben ser exactamente:
 Devuelve ÚNICAMENTE JSON válido.
 `;
 
-
             let texto;
 
             try {
@@ -1891,9 +2101,7 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
-
             let ranking;
-
 
             try {
 
@@ -1920,21 +2128,11 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
-
-            // =================================================
-            // FORZAR NÚMERO Y TÍTULO CORRECTOS
-            // =================================================
-
             ranking.numero =
                 criterio.numero;
 
             ranking.titulo =
                 criterio.titulo;
-
-
-            // =================================================
-            // VALIDAR JUEGOS
-            // =================================================
 
             if (
                 !ranking.juegos ||
@@ -1951,7 +2149,6 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
-
             if (
                 ranking.juegos.length !== 10
             ) {
@@ -1964,7 +2161,6 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
-
             for (
                 let j = 0;
                 j < ranking.juegos.length;
@@ -1974,10 +2170,8 @@ Devuelve ÚNICAMENTE JSON válido.
                 const juego =
                     ranking.juegos[j];
 
-
                 juego.puesto =
                     j + 1;
-
 
                 if (
                     !juego.nombre ||
@@ -1995,18 +2189,12 @@ Devuelve ÚNICAMENTE JSON válido.
 
                 }
 
-
                 const nombre =
                     String(
                         juego.nombre
                     )
                     .trim()
                     .toLowerCase();
-
-
-                // =================================================
-                // DETECTAR CÓDIGO
-                // =================================================
 
                 const pareceCodigo =
                     nombre.includes(
@@ -2037,7 +2225,6 @@ Devuelve ÚNICAMENTE JSON válido.
                         "fetch("
                     );
 
-
                 if (
                     pareceCodigo
                 ) {
@@ -2052,11 +2239,6 @@ Devuelve ÚNICAMENTE JSON válido.
                 }
 
             }
-
-
-            // =================================================
-            // VALIDACIONES DE TERROR
-            // =================================================
 
             if (
                 criterio.numero === 8
@@ -2080,7 +2262,6 @@ Devuelve ÚNICAMENTE JSON válido.
 
                 ];
 
-
                 for (
                     const juego
                     of ranking.juegos
@@ -2091,7 +2272,6 @@ Devuelve ÚNICAMENTE JSON válido.
                             juego.nombre
                         )
                         .toLowerCase();
-
 
                     for (
                         const prohibido
@@ -2117,13 +2297,11 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
-
             console.log(
                 "✅ Ranking",
                 criterio.numero,
                 "validado correctamente."
             );
-
 
             rankingsFinales.push(
                 ranking
@@ -2131,10 +2309,6 @@ Devuelve ÚNICAMENTE JSON válido.
 
         }
 
-
-        // =================================================
-        // COMPROBAR LOS 10 RANKINGS
-        // =================================================
 
         if (
             rankingsFinales.length !== 10
@@ -2145,7 +2319,6 @@ Devuelve ÚNICAMENTE JSON válido.
             );
 
         }
-
 
         rankingsFinales.sort(
             function(a, b) {
@@ -2158,10 +2331,6 @@ Devuelve ÚNICAMENTE JSON válido.
             }
         );
 
-
-        // =================================================
-        // GUARDAR RESULTADO
-        // =================================================
 
         estadoRankings = {
 
@@ -2182,11 +2351,9 @@ Devuelve ÚNICAMENTE JSON válido.
 
         };
 
-
         console.log(
             "✅ LOS 10 RANKINGS FUERON GENERADOS POR SEPARADO Y VALIDADOS."
         );
-
 
     } catch (error) {
 
@@ -2194,7 +2361,6 @@ Devuelve ÚNICAMENTE JSON válido.
             "❌ Error preparando rankings:",
             error
         );
-
 
         estadoRankings = {
 
@@ -2225,6 +2391,7 @@ Devuelve ÚNICAMENTE JSON válido.
 
 }
 
+
 // =====================================================
 // INICIAR PREPARACIÓN DE RANKINGS
 // =====================================================
@@ -2250,9 +2417,7 @@ app.post(
 
         }
 
-
         generarRankingsEnSegundoPlano();
-
 
         res.json({
 
@@ -2269,6 +2434,7 @@ app.post(
 
     }
 );
+
 
 // =====================================================
 // CONSULTAR ESTADO DE RANKINGS
@@ -2316,7 +2482,6 @@ function escaparHTMLRanking(
         return "";
     }
 
-
     return String(
         texto
     )
@@ -2355,7 +2520,6 @@ function crearContenidoRanking(
     let html =
         "";
 
-
     html += `
 
         <h2>
@@ -2370,13 +2534,11 @@ function crearContenidoRanking(
 
     `;
 
-
     ranking.juegos.forEach(
         function(juego) {
 
             let emoji =
                 "";
-
 
             if (
                 juego.puesto === 1
@@ -2402,7 +2564,6 @@ function crearContenidoRanking(
                     "🥉";
 
             }
-
 
             html += `
 
@@ -2441,7 +2602,6 @@ function crearContenidoRanking(
         }
     );
 
-
     html += `
 
         <h2>
@@ -2474,7 +2634,6 @@ function crearContenidoRanking(
 
     `;
 
-
     return html;
 
 }
@@ -2495,19 +2654,16 @@ function actualizarArchivoRanking(
             "rankings"
         );
 
-
     const nombreArchivo =
         "ranking" +
         numero +
         ".html";
-
 
     const rutaArchivo =
         path.join(
             carpetaRankings,
             nombreArchivo
         );
-
 
     if (
         !fs.existsSync(
@@ -2522,23 +2678,19 @@ function actualizarArchivoRanking(
 
     }
 
-
     let html =
         fs.readFileSync(
             rutaArchivo,
             "utf8"
         );
 
-
     const regexContenedor =
         /<div\s+class=["']ranking-contenido["'][^>]*>[\s\S]*?<\/div>\s*<\/article>/i;
-
 
     const coincidencia =
         html.match(
             regexContenedor
         );
-
 
     if (!coincidencia) {
 
@@ -2549,12 +2701,10 @@ function actualizarArchivoRanking(
 
     }
 
-
     const nuevoContenido =
         crearContenidoRanking(
             ranking
         );
-
 
     const nuevoBloque = `
 
@@ -2569,19 +2719,16 @@ function actualizarArchivoRanking(
 
     </article>`;
 
-
     html =
         html.replace(
             regexContenedor,
             nuevoBloque
         );
 
-
     const tituloNuevo =
         escaparHTMLRanking(
             ranking.titulo
         );
-
 
     html =
         html.replace(
@@ -2589,13 +2736,11 @@ function actualizarArchivoRanking(
             `<title>${tituloNuevo} | TEOS Gaming</title>`
         );
 
-
     html =
         html.replace(
             /<h1>[\s\S]*?<\/h1>/i,
             `<h1>${tituloNuevo}</h1>`
         );
-
 
     const fechaActual =
         new Date()
@@ -2611,7 +2756,6 @@ function actualizarArchivoRanking(
                 }
             );
 
-
     html =
         html.replace(
             /<p\s+class=["']ranking-fecha["'][^>]*>[\s\S]*?<\/p>/i,
@@ -2621,20 +2765,17 @@ function actualizarArchivoRanking(
             </p>`
         );
 
-
     fs.writeFileSync(
         rutaArchivo,
         html,
         "utf8"
     );
 
-
     console.log(
         "✅ Actualizado:",
         "rankings/" +
         nombreArchivo
     );
-
 
     return nombreArchivo;
 
@@ -2654,7 +2795,6 @@ app.post(
             const rankings =
                 req.body.rankings;
 
-
             if (
                 !Array.isArray(
                     rankings
@@ -2672,7 +2812,6 @@ app.post(
 
             }
 
-
             if (
                 rankings.length !== 10
             ) {
@@ -2688,10 +2827,8 @@ app.post(
 
             }
 
-
             const archivos =
                 [];
-
 
             for (
                 let i = 0;
@@ -2701,7 +2838,6 @@ app.post(
 
                 const ranking =
                     rankings[i];
-
 
                 if (
                     !ranking ||
@@ -2721,14 +2857,11 @@ app.post(
 
                 }
 
-
                 ranking.numero =
                     i + 1;
 
-
                 ranking.titulo =
                     temasRankings[i].titulo;
-
 
                 archivos.push(
                     actualizarArchivoRanking(
@@ -2738,7 +2871,6 @@ app.post(
                 );
 
             }
-
 
             res.json({
 
@@ -2752,14 +2884,12 @@ app.post(
 
             });
 
-
         } catch (error) {
 
             console.error(
                 "❌ Error publicando rankings:",
                 error
             );
-
 
             res.status(
                 500
@@ -2804,6 +2934,12 @@ app.get(
                     GEMINI_API_KEY
                 ),
 
+            supabase:
+                Boolean(
+                    SUPABASE_URL &&
+                    SUPABASE_KEY
+                ),
+
             rankings:
                 10,
 
@@ -2838,17 +2974,14 @@ Devuelve únicamente este JSON:
 `
                 );
 
-
             const datos =
                 JSON.parse(
                     texto
                 );
 
-
             res.json(
                 datos
             );
-
 
         } catch (error) {
 
@@ -2856,7 +2989,6 @@ Devuelve únicamente este JSON:
                 "❌ Error en prueba Gemini:",
                 error
             );
-
 
             res.status(
                 500
@@ -2887,32 +3019,48 @@ app.listen(
     function() {
 
         console.log("");
+
         console.log(
             "======================================"
         );
+
         console.log(
             "🤖 TEOS AI FUNCIONANDO"
         );
+
         console.log(
             "======================================"
         );
+
         console.log(
             "🌐 Puerto:",
             PORT
         );
+
         console.log(
             "🤖 Gemini:",
             GEMINI_API_KEY
                 ? "CONFIGURADO"
                 : "NO CONFIGURADO"
         );
+
+        console.log(
+            "🗄️ Supabase:",
+            SUPABASE_URL &&
+            SUPABASE_KEY
+                ? "CONFIGURADO"
+                : "NO CONFIGURADO"
+        );
+
         console.log(
             "🏆 Rankings:",
             "SISTEMA EN SEGUNDO PLANO"
         );
+
         console.log(
             "======================================"
         );
+
         console.log("");
 
     }
