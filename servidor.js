@@ -764,7 +764,7 @@ function generarHTMLNoticia(
 
 
 // =====================================================
-// OBTENER NOTICIAS
+// OBTENER NOTICIAS RSS
 // =====================================================
 
 app.get(
@@ -1155,7 +1155,7 @@ Devuelve ÚNICAMENTE JSON válido:
 
 
 // =====================================================
-// PUBLICAR ARTÍCULO
+// PUBLICAR ARTÍCULO EN SUPABASE
 // =====================================================
 
 app.post(
@@ -1195,7 +1195,7 @@ app.post(
                     .json({
 
                         error:
-                            "Supabase no está configurado. Revisa SUPABASE_URL y SUPABASE_KEY en Render."
+                            "Supabase no está configurado. Revisa SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en Render."
 
                     });
 
@@ -1211,16 +1211,16 @@ app.post(
                     articulo.titulo
                 );
 
-
-            // =================================================
-            // EVITAR SLUG DUPLICADO
-            // =================================================
-
-            let slugOriginal =
+            const slugOriginal =
                 slug;
 
             let contador =
                 2;
+
+
+            // =================================================
+            // EVITAR DUPLICADOS
+            // =================================================
 
             while (true) {
 
@@ -1275,46 +1275,6 @@ app.post(
 
 
             // =================================================
-            // GENERAR HTML
-            // =================================================
-
-            const articuloParaHTML = {
-
-                titulo:
-                    articulo.titulo,
-
-                introduccion:
-                    articulo.introduccion || "",
-
-                contenido:
-                    articulo.contenido || "",
-
-                conclusion:
-                    articulo.conclusion || "",
-
-                imagen:
-                    articulo.imagen || "",
-
-                fuente:
-                    articulo.fuente ||
-                    "Fuente original",
-
-                enlace:
-                    articulo.enlace ||
-                    "#",
-
-                fecha:
-                    fecha
-
-            };
-
-            const html =
-                generarHTMLNoticia(
-                    articuloParaHTML
-                );
-
-
-            // =================================================
             // NOMBRE DEL ARCHIVO VIRTUAL
             // =================================================
 
@@ -1324,36 +1284,57 @@ app.post(
 
 
             // =================================================
-            // GUARDAR EN SUPABASE
+            // DATOS DE LA NOTICIA
             // =================================================
 
             const registro = {
 
                 titulo:
-                    articulo.titulo,
+                    String(
+                        articulo.titulo
+                    ),
 
                 introduccion:
-                    articulo.introduccion || "",
+                    String(
+                        articulo.introduccion ||
+                        ""
+                    ),
 
                 contenido:
-                    articulo.contenido || "",
+                    String(
+                        articulo.contenido ||
+                        ""
+                    ),
 
                 conclusion:
-                    articulo.conclusion || "",
+                    String(
+                        articulo.conclusion ||
+                        ""
+                    ),
 
                 imagen:
-                    articulo.imagen || "",
+                    String(
+                        articulo.imagen ||
+                        ""
+                    ),
 
                 imagen_prompt:
-                    articulo.imagenPrompt || "",
+                    String(
+                        articulo.imagenPrompt ||
+                        ""
+                    ),
 
                 fuente:
-                    articulo.fuente ||
-                    "Fuente original",
+                    String(
+                        articulo.fuente ||
+                        "Fuente original"
+                    ),
 
                 enlace:
-                    articulo.enlace ||
-                    "#",
+                    String(
+                        articulo.enlace ||
+                        "#"
+                    ),
 
                 fecha:
                     fecha,
@@ -1362,13 +1343,14 @@ app.post(
                     nombreArchivo,
 
                 slug:
-                    slug,
-
-                html:
-                    html
+                    slug
 
             };
 
+
+            // =================================================
+            // GUARDAR EN SUPABASE
+            // =================================================
 
             const {
                 data,
@@ -1379,7 +1361,9 @@ app.post(
                     .insert(
                         registro
                     )
-                    .select()
+                    .select(
+                        "id,titulo,imagen,fecha,archivo,slug"
+                    )
                     .single();
 
 
@@ -1399,12 +1383,105 @@ app.post(
 
 
             // =================================================
+            // GUARDADO OPCIONAL LOCAL
+            // =================================================
+            //
+            // Esto NO es la fuente principal.
+            // Supabase es la fuente permanente.
+            //
+            // Si Render conserva el archivo temporalmente,
+            // la noticia podrá servirse directamente.
+            //
+            // Si Render elimina el archivo después de un
+            // reinicio, la ruta dinámica de abajo la recuperará
+            // automáticamente desde Supabase.
+            //
+
+            try {
+
+                const carpetaNoticias =
+                    path.join(
+                        __dirname,
+                        "noticias"
+                    );
+
+                if (
+                    !fs.existsSync(
+                        carpetaNoticias
+                    )
+                ) {
+
+                    fs.mkdirSync(
+                        carpetaNoticias,
+                        {
+                            recursive:
+                                true
+                        }
+                    );
+
+                }
+
+                const html =
+                    generarHTMLNoticia(
+                        registro
+                    );
+
+                const rutaArchivo =
+                    path.join(
+                        carpetaNoticias,
+                        nombreArchivo
+                    );
+
+                fs.writeFileSync(
+                    rutaArchivo,
+                    html,
+                    "utf8"
+                );
+
+                console.log(
+                    "📄 Copia local creada:",
+                    nombreArchivo
+                );
+
+            } catch (errorArchivo) {
+
+                console.warn(
+                    "⚠️ No se pudo crear la copia local. La noticia sigue guardada en Supabase:",
+                    errorArchivo.message
+                );
+
+            }
+
+
+            // =================================================
             // RESPUESTA
             // =================================================
 
             console.log(
-                "✅ NOTICIA GUARDADA EN SUPABASE:",
+                "======================================"
+            );
+
+            console.log(
+                "✅ NOTICIA GUARDADA EN SUPABASE"
+            );
+
+            console.log(
+                "📰",
+                data.titulo
+            );
+
+            console.log(
+                "📄",
                 nombreArchivo
+            );
+
+            console.log(
+                "🆔",
+                data.id
+            );
+
+            console.log(
+                "======================================"
             );
 
             res.json({
@@ -1413,7 +1490,7 @@ app.post(
                     true,
 
                 mensaje:
-                    "🚀 Noticia publicada correctamente y guardada permanentemente.",
+                    "🚀 Noticia publicada correctamente y guardada permanentemente en Supabase.",
 
                 id:
                     data.id,
@@ -1455,7 +1532,12 @@ app.post(
 
 
 // =====================================================
-// SERVIR NOTICIAS DESDE SUPABASE
+// SERVIR NOTICIAS
+// =====================================================
+//
+// Primero Express intenta encontrar el archivo físico.
+// Si no existe porque Render reinició, esta ruta busca
+// la noticia en Supabase y genera el HTML automáticamente.
 // =====================================================
 
 app.get(
@@ -1479,13 +1561,6 @@ app.get(
 
             }
 
-            const slug =
-                archivo.replace(
-                    /\.html$/i,
-                    ""
-                );
-
-
             if (!supabase) {
 
                 return res
@@ -1496,17 +1571,18 @@ app.get(
 
             }
 
-
             const {
                 data,
                 error
             } =
                 await supabase
                     .from("noticias")
-                    .select("html")
+                    .select(
+                        "id,titulo,introduccion,contenido,conclusion,imagen,imagen_prompt,fuente,enlace,fecha,archivo,slug"
+                    )
                     .eq(
-                        "slug",
-                        slug
+                        "archivo",
+                        archivo
                     )
                     .limit(1)
                     .maybeSingle();
@@ -1528,10 +1604,7 @@ app.get(
             }
 
 
-            if (
-                !data ||
-                !data.html
-            ) {
+            if (!data) {
 
                 return res
                     .status(404)
@@ -1539,21 +1612,52 @@ app.get(
                         `
                         <!DOCTYPE html>
                         <html lang="es">
+
                         <head>
+
                             <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <title>Noticia no encontrada | TEOS Gaming</title>
-                            <link rel="stylesheet" href="/estilo.css">
+
+                            <meta
+                                name="viewport"
+                                content="width=device-width, initial-scale=1.0"
+                            >
+
+                            <title>
+                                Noticia no encontrada | TEOS Gaming
+                            </title>
+
+                            <link
+                                rel="stylesheet"
+                                href="/estilo.css"
+                            >
+
                         </head>
+
                         <body>
-                            <main style="padding:40px;text-align:center;">
-                                <h1>📰 Noticia no encontrada</h1>
-                                <p>Esta noticia ya no existe o no pudo ser encontrada.</p>
+
+                            <main
+                                style="
+                                    padding:40px;
+                                    text-align:center;
+                                "
+                            >
+
+                                <h1>
+                                    📰 Noticia no encontrada
+                                </h1>
+
+                                <p>
+                                    Esta noticia ya no existe o no pudo ser encontrada.
+                                </p>
+
                                 <a href="/noticias.html">
                                     ← Volver a Noticias
                                 </a>
+
                             </main>
+
                         </body>
+
                         </html>
                         `
                     );
@@ -1561,10 +1665,20 @@ app.get(
             }
 
 
+            // =================================================
+            // GENERAR HTML DESDE SUPABASE
+            // =================================================
+
+            const html =
+                generarHTMLNoticia(
+                    data
+                );
+
+
             res
                 .type("html")
                 .send(
-                    data.html
+                    html
                 );
 
         } catch (error) {
@@ -1658,7 +1772,8 @@ app.get(
                             noticia.archivo ||
                             (
                                 noticia.slug
-                                    ? noticia.slug + ".html"
+                                    ? noticia.slug +
+                                      ".html"
                                     : ""
                             );
 
@@ -1684,7 +1799,8 @@ app.get(
 
                             enlace:
                                 archivo
-                                    ? "noticias/" + archivo
+                                    ? "noticias/" +
+                                      archivo
                                     : ""
 
                         };
@@ -1865,11 +1981,22 @@ async function generarRankingsEnSegundoPlano() {
     generandoRankings = true;
 
     estadoRankings = {
-        estado: "generando",
-        rankings: null,
-        error: null,
-        iniciado: new Date().toISOString(),
-        terminado: null
+
+        estado:
+            "generando",
+
+        rankings:
+            null,
+
+        error:
+            null,
+
+        iniciado:
+            new Date().toISOString(),
+
+        terminado:
+            null
+
     };
 
     try {
@@ -1964,7 +2091,8 @@ async function generarRankingsEnSegundoPlano() {
         ];
 
 
-        const rankingsFinales = [];
+        const rankingsFinales =
+            [];
 
 
         for (
@@ -1981,6 +2109,7 @@ async function generarRankingsEnSegundoPlano() {
                 criterio.numero,
                 criterio.titulo
             );
+
 
             const prompt = `
 
@@ -2078,7 +2207,9 @@ Los puestos deben ser exactamente:
 Devuelve ÚNICAMENTE JSON válido.
 `;
 
+
             let texto;
+
 
             try {
 
@@ -2101,7 +2232,9 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
+
             let ranking;
+
 
             try {
 
@@ -2128,11 +2261,13 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
+
             ranking.numero =
                 criterio.numero;
 
             ranking.titulo =
                 criterio.titulo;
+
 
             if (
                 !ranking.juegos ||
@@ -2149,6 +2284,7 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
+
             if (
                 ranking.juegos.length !== 10
             ) {
@@ -2161,6 +2297,7 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
+
             for (
                 let j = 0;
                 j < ranking.juegos.length;
@@ -2172,6 +2309,7 @@ Devuelve ÚNICAMENTE JSON válido.
 
                 juego.puesto =
                     j + 1;
+
 
                 if (
                     !juego.nombre ||
@@ -2189,12 +2327,14 @@ Devuelve ÚNICAMENTE JSON válido.
 
                 }
 
+
                 const nombre =
                     String(
                         juego.nombre
                     )
                     .trim()
                     .toLowerCase();
+
 
                 const pareceCodigo =
                     nombre.includes(
@@ -2225,6 +2365,7 @@ Devuelve ÚNICAMENTE JSON válido.
                         "fetch("
                     );
 
+
                 if (
                     pareceCodigo
                 ) {
@@ -2239,6 +2380,7 @@ Devuelve ÚNICAMENTE JSON válido.
                 }
 
             }
+
 
             if (
                 criterio.numero === 8
@@ -2262,6 +2404,7 @@ Devuelve ÚNICAMENTE JSON válido.
 
                 ];
 
+
                 for (
                     const juego
                     of ranking.juegos
@@ -2272,6 +2415,7 @@ Devuelve ÚNICAMENTE JSON válido.
                             juego.nombre
                         )
                         .toLowerCase();
+
 
                     for (
                         const prohibido
@@ -2297,11 +2441,13 @@ Devuelve ÚNICAMENTE JSON válido.
 
             }
 
+
             console.log(
                 "✅ Ranking",
                 criterio.numero,
                 "validado correctamente."
             );
+
 
             rankingsFinales.push(
                 ranking
@@ -2319,6 +2465,7 @@ Devuelve ÚNICAMENTE JSON válido.
             );
 
         }
+
 
         rankingsFinales.sort(
             function(a, b) {
@@ -2351,6 +2498,7 @@ Devuelve ÚNICAMENTE JSON válido.
 
         };
 
+
         console.log(
             "✅ LOS 10 RANKINGS FUERON GENERADOS POR SEPARADO Y VALIDADOS."
         );
@@ -2361,6 +2509,7 @@ Devuelve ÚNICAMENTE JSON válido.
             "❌ Error preparando rankings:",
             error
         );
+
 
         estadoRankings = {
 
@@ -2417,7 +2566,9 @@ app.post(
 
         }
 
+
         generarRankingsEnSegundoPlano();
+
 
         res.json({
 
@@ -2534,6 +2685,7 @@ function crearContenidoRanking(
 
     `;
 
+
     ranking.juegos.forEach(
         function(juego) {
 
@@ -2564,6 +2716,7 @@ function crearContenidoRanking(
                     "🥉";
 
             }
+
 
             html += `
 
@@ -2602,6 +2755,7 @@ function crearContenidoRanking(
         }
     );
 
+
     html += `
 
         <h2>
@@ -2634,6 +2788,7 @@ function crearContenidoRanking(
 
     `;
 
+
     return html;
 
 }
@@ -2665,6 +2820,7 @@ function actualizarArchivoRanking(
             nombreArchivo
         );
 
+
     if (
         !fs.existsSync(
             rutaArchivo
@@ -2678,19 +2834,23 @@ function actualizarArchivoRanking(
 
     }
 
+
     let html =
         fs.readFileSync(
             rutaArchivo,
             "utf8"
         );
 
+
     const regexContenedor =
         /<div\s+class=["']ranking-contenido["'][^>]*>[\s\S]*?<\/div>\s*<\/article>/i;
+
 
     const coincidencia =
         html.match(
             regexContenedor
         );
+
 
     if (!coincidencia) {
 
@@ -2701,10 +2861,12 @@ function actualizarArchivoRanking(
 
     }
 
+
     const nuevoContenido =
         crearContenidoRanking(
             ranking
         );
+
 
     const nuevoBloque = `
 
@@ -2719,16 +2881,19 @@ function actualizarArchivoRanking(
 
     </article>`;
 
+
     html =
         html.replace(
             regexContenedor,
             nuevoBloque
         );
 
+
     const tituloNuevo =
         escaparHTMLRanking(
             ranking.titulo
         );
+
 
     html =
         html.replace(
@@ -2736,11 +2901,13 @@ function actualizarArchivoRanking(
             `<title>${tituloNuevo} | TEOS Gaming</title>`
         );
 
+
     html =
         html.replace(
             /<h1>[\s\S]*?<\/h1>/i,
             `<h1>${tituloNuevo}</h1>`
         );
+
 
     const fechaActual =
         new Date()
@@ -2749,12 +2916,15 @@ function actualizarArchivoRanking(
                 {
                     day:
                         "numeric",
+
                     month:
                         "long",
+
                     year:
                         "numeric"
                 }
             );
+
 
     html =
         html.replace(
@@ -2765,17 +2935,20 @@ function actualizarArchivoRanking(
             </p>`
         );
 
+
     fs.writeFileSync(
         rutaArchivo,
         html,
         "utf8"
     );
 
+
     console.log(
         "✅ Actualizado:",
         "rankings/" +
         nombreArchivo
     );
+
 
     return nombreArchivo;
 
@@ -2795,6 +2968,7 @@ app.post(
             const rankings =
                 req.body.rankings;
 
+
             if (
                 !Array.isArray(
                     rankings
@@ -2812,6 +2986,7 @@ app.post(
 
             }
 
+
             if (
                 rankings.length !== 10
             ) {
@@ -2827,8 +3002,10 @@ app.post(
 
             }
 
+
             const archivos =
                 [];
+
 
             for (
                 let i = 0;
@@ -2838,6 +3015,7 @@ app.post(
 
                 const ranking =
                     rankings[i];
+
 
                 if (
                     !ranking ||
@@ -2857,11 +3035,14 @@ app.post(
 
                 }
 
+
                 ranking.numero =
                     i + 1;
 
+
                 ranking.titulo =
                     temasRankings[i].titulo;
+
 
                 archivos.push(
                     actualizarArchivoRanking(
@@ -2871,6 +3052,7 @@ app.post(
                 );
 
             }
+
 
             res.json({
 
@@ -2890,6 +3072,7 @@ app.post(
                 "❌ Error publicando rankings:",
                 error
             );
+
 
             res.status(
                 500
@@ -2974,10 +3157,12 @@ Devuelve únicamente este JSON:
 `
                 );
 
+
             const datos =
                 JSON.parse(
                     texto
                 );
+
 
             res.json(
                 datos
@@ -2989,6 +3174,7 @@ Devuelve únicamente este JSON:
                 "❌ Error en prueba Gemini:",
                 error
             );
+
 
             res.status(
                 500
